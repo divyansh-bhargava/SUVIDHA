@@ -164,11 +164,11 @@ const INTENTS: { keywords: string[]; intent: Intent }[] = [
   },
 ];
 
-const GREETING_EN = "Welcome to SUVIDHA Smart Service Kiosk. I will help you complete your service step by step. First, please log in to continue.";
-const GREETING_HI = "सुविधा स्मार्ट सर्विस कियोस्क में आपका स्वागत है। मैं आपको कदम दर कदम सेवा पूरी करने में मदद करूंगा। पहले, कृपया लॉगिन करें।";
+const GREETING_EN = "Welcome to SUVIDHA. I can help you pay bills, apply for services, or track requests. Please tell me what you would like to do.";
+const GREETING_HI = "सुविधा में आपका स्वागत है। मैं बिल भुगतान, सेवाओं के लिए आवेदन, या अनुरोध ट्रैकिंग में मदद कर सकता हूँ। कृपया बताएं आप क्या करना चाहते हैं।";
 
-const GREETING_LOGGED_IN_EN = "Welcome back! I'm your voice assistant. Tell me what you'd like to do today — pay a bill, register a complaint, or say Help for more options.";
-const GREETING_LOGGED_IN_HI = "वापस आने पर स्वागत है! मैं आपका आवाज़ सहायक हूँ। बताइए आज क्या करना है — बिल भुगतान, शिकायत, या मदद कहें।";
+const GREETING_LOGGED_IN_EN = "Hello! I'm your voice assistant. I can help you pay bills, apply for services, or track requests. Please tell me what you would like to do.";
+const GREETING_LOGGED_IN_HI = "नमस्ते! मैं आपका आवाज़ सहायक हूँ। बिल भुगतान, सेवाएँ या ट्रैकिंग के लिए बताएं आप क्या करना चाहते हैं।";
 
 const LOGIN_REQUIRED_EN = "You need to login first. Please choose a login method on the screen — SUVIDHA ID with OTP or QR Code scan.";
 const LOGIN_REQUIRED_HI = "पहले लॉगिन करना होगा। कृपया स्क्रीन पर लॉगिन विधि चुनें — सुविधा ID या QR कोड स्कैन।";

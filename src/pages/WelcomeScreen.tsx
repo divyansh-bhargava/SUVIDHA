@@ -5,6 +5,7 @@ import { useVoiceAssistantContext } from '@/contexts/VoiceAssistantContext';
 import { Globe, QrCode, Smartphone, Shield, FileCheck, ChevronRight, ArrowLeft, Fingerprint, Mic, Hand } from 'lucide-react';
 import OTPLogin from '@/components/login/OTPLogin';
 import AppScanLogin from '@/components/login/AppScanLogin';
+import india from "../../public/img/india-emblem.png";
 
 type LoginMethod = 'otp' | 'app' | null;
 type SupportedLanguage = 'en' | 'hi' | 'ta' | 'te' | 'bn' | 'mr' | 'gu' | 'kn';
@@ -81,93 +82,125 @@ const WelcomeScreen: React.FC = () => {
   // Language Selection Screen
   if (!showLogin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex flex-col kiosk-mode">
-        {/* Header */}
-        <div className="p-6 flex items-center justify-between">
+      <div className="h-screen overflow-hidden bg-gradient-to-b from-blue-50 via-white to-green-50 dark:from-slate-900 dark:to-slate-950 flex flex-col">
+        {/* Top Header Bar */}
+        <div className="bg-gradient-to-r from-orange-500 via-white to-green-600 px-6 py-3 flex items-center justify-between shadow-lg border-b-4 border-orange-600">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <span className="text-xl">🇮🇳</span>
+            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+              <span className="text-2xl">
+                <img src={india} alt="Emblem of India" className="w-6 h-6" />
+              </span>
             </div>
-            <div>
-              <p className="text-sm font-medium text-foreground">Government of India</p>
-              <p className="text-xs text-muted-foreground">Digital India Initiative</p>
+            <div className="text-sm leading-tight">
+              <p className="font-bold text-slate-800">Government of India</p>
+              <p className="text-xs text-slate-600">Digital India Initiative</p>
             </div>
+          </div>
+          <div className="flex items-center gap-5">
+            <div className="text-right">
+              <h1 className="text-2xl font-black text-primary tracking-tight">SUVIDHA</h1>
+              <p className="text-[10px] text-slate-600 uppercase tracking-wider">Smart Service Kiosk</p>
+            </div>
+            <button
+              onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
+              className="flex items-center gap-1.5 px-4 py-2 mb-1 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-md"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="font-bold text-sm">{language === 'en' ? 'हिंदी' : 'EN'}</span>
+            </button>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
-          {/* Logo */}
-          <div className="mb-8 animate-slide-up">
-            <div className="w-32 h-32 mx-auto rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-primary/20 shadow-lg">
-              <span className="text-7xl">🏛️</span>
-            </div>
-          </div>
-
-          {/* Title */}
-          <div className="text-center mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <h1 className="text-5xl md:text-6xl font-bold text-primary mb-2 tracking-tight">
-              SUVIDHA
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Unified Civic Services Platform
-            </p>
-          </div>
-
-          {/* Features */}
-          <div className="flex justify-center gap-8 mb-12 animate-slide-up" style={{ animationDelay: '0.15s' }}>
-            {[
-              { icon: Shield, label: 'One Identity' },
-              { icon: FileCheck, label: 'No Repeat Data' },
-              { icon: Fingerprint, label: 'Secure Access' },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex flex-col items-center gap-2">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20">
-                  <Icon className="w-7 h-7 text-accent" />
-                </div>
-                <span className="text-sm text-muted-foreground font-medium">{label}</span>
+        {/* Main Content Area */}
+        <div className="flex-1 flex items-center justify-center px-8 py-6 overflow-hidden">
+          <div className="w-full max-w-5xl">
+            {/* Welcome Section */}
+            <div className="text-center mb-8 animate-in fade-in duration-500">
+              <div className="inline-block mb-4 p-3 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl shadow-lg">
+                <span className="text-5xl">🏛️</span>
               </div>
-            ))}
-          </div>
+              <h2 className="text-5xl font-black text-slate-800 dark:text-white mb-4 tracking-tight drop-shadow-sm">
+                {language === 'en' ? 'Welcome to SUVIDHA' : 'सुविधा में आपका स्वागत है'}
+              </h2>
+              <div className="max-w-3xl mx-auto">
+                <p className="text-xl font-semibold text-primary dark:text-primary mb-3">
+                  {language === 'en' 
+                    ? 'Smart Unified Verified Integrated Digital Hub for All' 
+                    : 'स्मार्ट यूनिफाइड वेरिफाइड इंटीग्रेटेड डिजिटल हब फॉर ऑल'}
+                </p>
 
-          {/* Language Selection */}
-          <div className="w-full max-w-2xl animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <Globe className="w-5 h-5 text-primary" />
-              <p className="text-lg font-medium text-foreground">
-                {language === 'en' ? 'Select your language to begin' : 'शुरू करने के लिए अपनी भाषा चुनें'}
-              </p>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {languageOptions.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => handleLanguageSelect(lang.code)}
-                  className="group relative p-4 rounded-2xl border-2 border-border bg-card hover:border-primary hover:shadow-md transition-all duration-200 active:scale-[0.98]"
-                >
-                  <span className="block text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {lang.nativeName}
-                  </span>
-                  <span className="block text-xs text-muted-foreground mt-1">
-                    {lang.name}
-                  </span>
-                  {lang.code !== 'en' && lang.code !== 'hi' && (
-                    <span className="absolute -top-1 -right-1 text-[9px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-border">
-                      Soon
-                    </span>
-                  )}
-                </button>
-              ))}
+            {/* Main Action Section */}
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-slate-200/50 dark:border-slate-700/50 p-4 mb-6">
+              {/* Start Self-Service */}
+              <div>
+                
+                <div className="space-y-2">
+                  <p className="text-base font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide text-center pb-2">
+                    {language === 'en' ? '🌐 Select Language to Begin' : '🌐 शुरू करने के लिए भाषा चुनें'}
+                  </p>
+
+                  <div className="grid grid-cols-4 gap-3">
+                    {languageOptions.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => handleLanguageSelect(lang.code)}
+                        disabled={lang.code !== 'en' && lang.code !== 'hi'}
+                        className={`relative p-3 rounded-xl border-2 transition-all duration-200 ${
+                          lang.code === 'en' || lang.code === 'hi'
+                            ? 'bg-gradient-to-br from-white via-slate-50 to-slate-100 dark:from-slate-700 dark:via-slate-750 dark:to-slate-800 border-slate-300 dark:border-slate-600 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 hover:scale-110 hover:-translate-y-1 active:scale-95 cursor-pointer'
+                            : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-40 cursor-not-allowed'
+                        }`}
+                      >
+                        <span className="block text-lg font-black text-foreground mb-1">
+                          {lang.nativeName}
+                        </span>
+                        <span className="block text-[10px] text-muted-foreground uppercase tracking-wider">
+                          {lang.name}
+                        </span>
+                        {lang.code !== 'en' && lang.code !== 'hi' && (
+                          <span className="absolute top-1 right-1 text-[7px] bg-slate-300 dark:bg-slate-600 px-1 py-0.5 rounded">
+                            Soon
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Emergency Notice Banner */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-red-200 via-red-300 to-red-200 dark:from-amber-900/30 dark:to-amber-800/30 border-l-4 border-amber-500 rounded-xl px-5 py-4 shadow-lg mb-6 animate-pulse-subtle">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+              <div className="relative flex items-center gap-4 justify-center">
+                <div className="flex-shrink-0 w-10 h-10 bg-red-700 rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                  <span className="text-lg">📢</span>
+                </div>
+                <p className="text-sm font-bold text-gray-900 dark:text-amber-100">
+                  {language === 'en' 
+                    ? 'Service Alert: Water supply maintenance scheduled for Sector 5 on 15th Feb' 
+                    : 'सेवा चेतावनी: 15 फरवरी को सेक्टर 5 में पानी की आपूर्ति रखरखाव निर्धारित'}
+                </p>
+              </div>
+            </div>
+
           </div>
+
         </div>
 
         {/* Footer */}
-        <div className="p-6 text-center border-t border-border/50">
-          <p className="text-xs text-muted-foreground">
-            © 2024 Ministry of Electronics & Information Technology, Government of India
-          </p>
+        <div className="bg-slate-100 dark:bg-slate-900 px-6 py-2.5 border-t-2 border-slate-300 dark:border-slate-800">
+          <div className="flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400">
+            <p>
+              {language === 'en' 
+                ? 'For assistance, use Voice Help or contact the help desk' 
+                : 'सहायता के लिए, वॉयस हेल्प का उपयोग करें या हेल्प डेस्क से संपर्क करें'}
+            </p>
+            <p>© 2024 MeitY, Government of India</p>
+          </div>
         </div>
       </div>
     );
@@ -175,147 +208,112 @@ const WelcomeScreen: React.FC = () => {
 
   // Login Screen
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex flex-col kiosk-mode">
-      {/* Header */}
-      <div className="p-5 flex items-center justify-between border-b border-border/50 bg-background/80 backdrop-blur-sm">
+    <div className="h-screen overflow-hidden bg-gradient-to-b from-blue-50 via-white to-green-50 dark:from-slate-900 dark:to-slate-950 flex flex-col">
+      {/* Top Header Bar */}
+      <div className="bg-gradient-to-r from-orange-500 via-white to-green-600 px-6 py-3 flex items-center justify-between shadow-lg border-b-4 border-orange-600">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-white transition-all text-sm font-medium shadow-md"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="font-medium">{t('back')}</span>
+          <ArrowLeft className="w-4 h-4" />
+          <span>{t('back')}</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-lg">🏛️</span>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md">
+            <span className="text-xl">🇮🇳</span>
           </div>
-          <span className="font-semibold text-primary">SUVIDHA</span>
+          <div className="text-center">
+            <h1 className="text-xl font-black text-primary tracking-tight">SUVIDHA</h1>
+            <p className="text-[9px] text-slate-600 uppercase tracking-wider">Smart Service Kiosk</p>
+          </div>
         </div>
 
         <button
           onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all shadow-md"
         >
           <Globe className="w-4 h-4" />
-          <span className="text-sm font-medium">
-            {language === 'en' ? 'हिंदी' : 'EN'}
-          </span>
+          <span className="font-bold text-sm">{language === 'en' ? 'हिंदी' : 'EN'}</span>
         </button>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
+      {/* Main Content - Fixed Height */}
+      <div className="flex-1 flex items-center justify-center p-6 overflow-hidden">
         {!loginMethod ? (
-          /* Login Method Selection */
-          <div className="w-full max-w-lg animate-slide-up">
-            {/* Welcome Header */}
-            <div className="text-center mb-10">
-              <div className="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20">
-                <Shield className="w-10 h-10 text-primary" />
-              </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                {language === 'en' ? 'Welcome to SUVIDHA' : 'सुविधा में आपका स्वागत है'}
-              </h1>
-              <p className="text-muted-foreground">
-                {language === 'en' ? 'How would you like to proceed?' : 'आप कैसे आगे बढ़ना चाहेंगे?'}
-              </p>
-            </div>
-
-            {/* Two Main Entry Paths */}
-            <div className="space-y-4 mb-6">
-              {/* Start Self-Service */}
-              <div className="kiosk-card p-2">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4 pt-2 mb-3">
-                  {language === 'en' ? 'Choose Login Method' : 'लॉगिन विधि चुनें'}
+          /* Login Method Selection - ATM Style */
+          <div className="w-full max-w-4xl">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border-4 border-primary/20 p-8">
+              {/* Header */}
+              <div className="text-center mb-8 pb-6 border-b-2 border-slate-200 dark:border-slate-700">
+                <div className="inline-flex items-center gap-3 mb-3">
+                  <Shield className="w-8 h-8 text-primary" />
+                  <h1 className="text-2xl font-bold text-foreground">
+                    {language === 'en' ? 'SECURE LOGIN' : 'सुरक्षित लॉगिन'}
+                  </h1>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {language === 'en' ? 'Choose your preferred authentication method' : 'अपनी पसंदीदा प्रमाणीकरण विधि चुनें'}
                 </p>
+              </div>
 
-                {/* OTP Login Option */}
+              {/* Login Options Grid - ATM Style */}
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                {/* OTP Login */}
                 <button
                   onClick={handleChooseOTP}
-                  className="w-full p-5 rounded-2xl hover:bg-muted transition-all group text-left flex items-center gap-4"
+                  className="group p-8 rounded-3xl border-4 border-primary/30 bg-gradient-to-br from-primary/5 via-primary/8 to-primary/10 hover:from-primary hover:to-primary/90 hover:border-primary hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 transition-all duration-200 active:scale-95"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all shrink-0">
-                    <QrCode className="w-7 h-7 text-primary group-hover:text-primary-foreground" />
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-20 h-20 rounded-2xl bg-primary/20 group-hover:bg-white/20 flex items-center justify-center transition-all shadow-lg">
+                      <QrCode className="w-10 h-10 text-primary group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-bold text-lg text-foreground group-hover:text-white transition-colors mb-1">
+                        {language === 'en' ? 'SUVIDHA ID + OTP' : 'सुविधा ID + OTP'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground group-hover:text-white/90 transition-colors">
+                        {language === 'en' ? 'Mobile OTP verification' : 'मोबाइल OTP सत्यापन'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-foreground text-lg mb-0.5">
-                      {language === 'en' ? 'SUVIDHA ID + OTP' : 'सुविधा ID + OTP'}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {language === 'en' ? 'Enter your ID and verify with mobile OTP' : 'अपनी ID दर्ज करें और मोबाइल OTP से सत्यापित करें'}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary shrink-0" />
                 </button>
 
-                <div className="h-px bg-border mx-4" />
-
-                {/* App Scan Option */}
+                {/* App Scan */}
                 <button
                   onClick={handleChooseApp}
-                  className="w-full p-5 rounded-2xl hover:bg-muted transition-all group text-left flex items-center gap-4"
+                  className="group p-8 rounded-3xl border-4 border-accent/30 bg-gradient-to-br from-accent/5 via-accent/8 to-accent/10 hover:from-accent hover:to-accent/90 hover:border-accent hover:shadow-2xl hover:shadow-accent/30 hover:-translate-y-1 transition-all duration-200 active:scale-95"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all shrink-0">
-                    <Smartphone className="w-7 h-7 text-accent group-hover:text-accent-foreground" />
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-20 h-20 rounded-2xl bg-accent/20 group-hover:bg-white/20 flex items-center justify-center transition-all shadow-lg">
+                      <Smartphone className="w-10 h-10 text-accent group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-bold text-lg text-foreground group-hover:text-white transition-colors mb-1">
+                        {language === 'en' ? 'SUVIDHA Mobile App' : 'सुविधा मोबाइल ऐप'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground group-hover:text-white/90 transition-colors">
+                        {language === 'en' ? 'Scan QR with your app' : 'अपने ऐप से QR स्कैन करें'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-foreground text-lg mb-0.5">
-                      {language === 'en' ? 'SUVIDHA Mobile App' : 'सुविधा मोबाइल ऐप'}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {language === 'en' ? 'Scan QR code using SUVIDHA app' : 'सुविधा ऐप से QR कोड स्कैन करें'}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-accent shrink-0" />
                 </button>
               </div>
-            </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-sm text-muted-foreground font-medium">
-                {language === 'en' ? 'or need help?' : 'या मदद चाहिए?'}
-              </span>
-              <div className="flex-1 h-px bg-border" />
-            </div>
 
-            {/* Voice Assistant Entry */}
-            <button
-              onClick={handleVoiceStart}
-              disabled={voiceAssistant.isActive}
-              className="w-full p-5 rounded-2xl border-2 border-accent/30 bg-gradient-to-br from-accent/5 to-accent/10 hover:border-accent hover:shadow-lg transition-all group text-left flex items-center gap-4 active:scale-[0.98] disabled:opacity-60"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-accent/20 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all relative shrink-0">
-                <Mic className="w-7 h-7 text-accent group-hover:text-accent-foreground" />
-                {!voiceAssistant.isActive && (
-                  <div className="absolute inset-0 rounded-2xl border-2 border-accent/40 animate-ping opacity-30" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-foreground text-lg mb-0.5">
-                  {language === 'en' ? '🎙️ Use Voice Help Assistant' : '🎙️ आवाज़ सहायक का उपयोग करें'}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {language === 'en'
-                    ? 'I will guide you step by step through voice commands'
-                    : 'मैं आपको आवाज़ से कदम दर कदम मार्गदर्शन करूंगा'}
+
+              {/* Demo IDs */}
+              <div className="pt-5 border-t-2 border-slate-200 dark:border-slate-700">
+                <p className="text-xs text-muted-foreground text-center mb-3 font-semibold uppercase tracking-wider">
+                  {language === 'en' ? '🔐 Demo Credentials for Testing' : '🔐 परीक्षण के लिए डेमो क्रेडेंशियल'}
                 </p>
-              </div>
-            </button>
-
-            {/* Demo Credentials */}
-            <div className="mt-10 p-4 rounded-xl bg-muted/50 border border-border">
-              <p className="text-xs text-muted-foreground text-center mb-3 font-medium uppercase tracking-wide">
-                {language === 'en' ? 'Demo Credentials' : 'डेमो क्रेडेंशियल्स'}
-              </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {['SUV2024001234', 'MASTER', 'STAFF', 'DEPT_ELEC'].map((id) => (
-                  <span key={id} className="px-3 py-1.5 bg-background rounded-lg font-mono text-xs border border-border">
-                    {id}
-                  </span>
-                ))}
+                <div className="flex flex-wrap justify-center gap-2">
+                  {['SUV2024001234', 'MASTER', 'STAFF', 'DEPT_ELEC'].map((id) => (
+                    <span key={id} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-mono border-2 border-slate-300 dark:border-slate-600 font-semibold">
+                      {id}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -324,6 +322,20 @@ const WelcomeScreen: React.FC = () => {
         ) : (
           <AppScanLogin onSuccess={handleLoginSuccess} />
         )}
+
+        {/* Floating Voice Assistant Button */}
+      </div>
+
+      {/* Footer */}
+      <div className="bg-slate-100 dark:bg-slate-900 px-6 py-2.5 border-t-2 border-slate-300 dark:border-slate-800">
+        <div className="flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400">
+          <p>
+            {language === 'en' 
+              ? '🔒 Secure session • For assistance, use Voice Help or contact help desk' 
+              : '🔒 सुरक्षित सत्र • सहायता के लिए, वॉयस हेल्प या हेल्प डेस्क से संपर्क करें'}
+          </p>
+          <p>© 2024 MeitY, Government of India</p>
+        </div>
       </div>
     </div>
   );

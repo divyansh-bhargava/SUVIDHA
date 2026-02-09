@@ -29,7 +29,7 @@ const VoiceAssistantIndicator: React.FC<VoiceAssistantIndicatorProps> = ({
     return (
       <button
         onClick={onStart}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full bg-accent text-accent-foreground shadow-lg hover:brightness-110 transition-all active:scale-95 animate-slide-up"
+        className="fixed bottom-10 right-8 z-40 flex flex-col items-center gap-1 p-4 rounded-full bg-accent text-accent-foreground shadow-lg hover:brightness-110 transition-all active:scale-95 animate-slide-up"
         aria-label={language === 'en' ? 'Voice Assistant' : 'आवाज़ सहायक'}
       >
         <Headphones className="w-5 h-5" />

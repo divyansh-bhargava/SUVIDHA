@@ -1,0 +1,351 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  :root {
+    /* SUVIDHA Government Kiosk Theme */
+    --background: 210 20% 98%;
+    --foreground: 215 30% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 30% 15%;
+
+    /* Deep Government Blue */
+    --primary: 213 55% 25%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light Blue Surface */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 213 55% 25%;
+
+    /* Muted Grays */
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 15% 45%;
+
+    /* Teal Accent */
+    --accent: 170 60% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Success Green */
+    --success: 145 65% 40%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning Orange */
+    --warning: 35 90% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Destructive Red */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 213 55% 25%;
+
+    --radius: 1rem;
+
+    /* Kiosk-specific tokens */
+    --kiosk-header: 213 55% 20%;
+    --kiosk-header-foreground: 0 0% 100%;
+    --kiosk-tile: 0 0% 100%;
+    --kiosk-tile-hover: 210 40% 97%;
+    --kiosk-tile-border: 210 30% 90%;
+    --kiosk-icon-bg: 210 50% 95%;
+    
+    /* Touch target sizes */
+    --touch-target-min: 64px;
+    --touch-target-lg: 80px;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 4px -1px hsl(215 30% 15% / 0.06), 0 1px 2px -1px hsl(215 30% 15% / 0.04);
+    --shadow-md: 0 4px 12px -2px hsl(215 30% 15% / 0.08), 0 2px 6px -2px hsl(215 30% 15% / 0.04);
+    --shadow-lg: 0 10px 30px -4px hsl(215 30% 15% / 0.12), 0 4px 12px -4px hsl(215 30% 15% / 0.06);
+    --shadow-tile: 0 4px 16px -4px hsl(213 55% 25% / 0.1), 0 2px 8px -4px hsl(213 55% 25% / 0.06);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 215 30% 10%;
+    --foreground: 210 20% 95%;
+
+    --card: 215 30% 12%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 215 30% 12%;
+    --popover-foreground: 210 20% 95%;
+
+    --primary: 200 80% 60%;
+    --primary-foreground: 215 30% 10%;
+
+    --secondary: 215 25% 18%;
+    --secondary-foreground: 210 20% 95%;
+
+    --muted: 215 25% 18%;
+    --muted-foreground: 215 15% 60%;
+
+    --accent: 170 60% 50%;
+    --accent-foreground: 215 30% 10%;
+
+    --success: 145 65% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 35 90% 55%;
+    --warning-foreground: 0 0% 0%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 25% 22%;
+    --input: 215 25% 22%;
+    --ring: 200 80% 60%;
+
+    --kiosk-header: 213 55% 15%;
+    --kiosk-header-foreground: 0 0% 100%;
+    --kiosk-tile: 215 30% 14%;
+    --kiosk-tile-hover: 215 30% 16%;
+    --kiosk-tile-border: 215 25% 20%;
+    --kiosk-icon-bg: 215 30% 18%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Kiosk mode - prevent text selection and context menu */
+  .kiosk-mode {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+@layer components {
+  /* Large touch-friendly button base */
+  .kiosk-btn {
+    @apply min-h-[64px] min-w-[64px] px-8 py-4 text-xl font-semibold rounded-2xl transition-all duration-200;
+    @apply active:scale-[0.98] focus-visible:ring-4 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .kiosk-btn-primary {
+    @apply kiosk-btn bg-primary text-primary-foreground;
+    @apply hover:brightness-110 active:brightness-95;
+    box-shadow: var(--shadow-md);
+  }
+
+  .kiosk-btn-secondary {
+    @apply kiosk-btn bg-secondary text-secondary-foreground border-2 border-primary/20;
+    @apply hover:bg-secondary/80 active:bg-secondary/70;
+  }
+
+  .kiosk-btn-accent {
+    @apply kiosk-btn bg-accent text-accent-foreground;
+    @apply hover:brightness-110 active:brightness-95;
+    box-shadow: var(--shadow-md);
+  }
+
+  .kiosk-btn-success {
+    @apply kiosk-btn bg-success text-success-foreground;
+    @apply hover:brightness-110 active:brightness-95;
+    box-shadow: var(--shadow-md);
+  }
+
+  .kiosk-btn-ghost {
+    @apply kiosk-btn bg-transparent text-foreground;
+    @apply hover:bg-muted active:bg-muted/80;
+  }
+
+  /* Service tiles */
+  .service-tile {
+    @apply flex flex-col items-center justify-center gap-4 p-8 rounded-3xl;
+    @apply transition-all duration-200 cursor-pointer;
+    @apply hover:border-primary/30;
+    @apply active:scale-[0.98];
+    background-color: hsl(var(--kiosk-tile));
+    border: 2px solid hsl(var(--kiosk-tile-border));
+    box-shadow: var(--shadow-tile);
+    min-height: 180px;
+  }
+  
+  .service-tile:hover {
+    background-color: hsl(var(--kiosk-tile-hover));
+  }
+
+  .service-tile-icon {
+    @apply w-20 h-20 rounded-2xl flex items-center justify-center;
+    @apply bg-kiosk-icon-bg;
+  }
+
+  /* Floating action buttons */
+  .fab {
+    @apply fixed z-50 w-16 h-16 rounded-full flex items-center justify-center;
+    @apply transition-all duration-200 active:scale-95;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .fab-voice {
+    @apply fab bg-accent text-accent-foreground;
+    @apply hover:brightness-110;
+  }
+
+  .fab-language {
+    @apply fab bg-primary text-primary-foreground;
+    @apply hover:brightness-110;
+  }
+
+  /* Header styles */
+  .kiosk-header {
+    @apply w-full py-4 px-6;
+    @apply bg-kiosk-header text-kiosk-header-foreground;
+  }
+
+  /* Input styles for kiosk */
+  .kiosk-input {
+    @apply w-full min-h-[64px] px-6 text-xl rounded-2xl;
+    @apply bg-background border-2 border-input;
+    @apply focus:border-primary focus:ring-4 focus:ring-primary/20;
+    @apply placeholder:text-muted-foreground;
+  }
+
+  /* Status badges */
+  .status-badge {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
+  }
+
+  .status-pending {
+    @apply status-badge bg-warning/20 text-warning;
+  }
+
+  .status-approved {
+    @apply status-badge bg-success/20 text-success;
+  }
+
+  .status-rejected {
+    @apply status-badge bg-destructive/20 text-destructive;
+  }
+
+  .status-processing {
+    @apply status-badge bg-primary/20 text-primary;
+  }
+
+  /* Voice indicator animation */
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .voice-listening {
+    position: relative;
+  }
+
+  .voice-listening::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: hsl(var(--accent) / 0.3);
+    animation: pulse-ring 1.5s ease-out infinite;
+  }
+
+  /* Modal/Dialog for kiosk */
+  .kiosk-modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    @apply bg-foreground/50 backdrop-blur-sm;
+  }
+
+  .kiosk-modal-content {
+    @apply bg-card rounded-3xl p-8 max-w-lg w-full mx-4;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Card styles */
+  .kiosk-card {
+    @apply bg-card rounded-3xl p-6 border border-border;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Receipt/Document styles */
+  .receipt {
+    @apply bg-card rounded-2xl p-6 border-2 border-dashed border-border;
+    @apply font-mono text-sm;
+  }
+}
+
+/* Custom scrollbar for kiosk */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.3);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+/* Utility for kiosk-icon-bg color */
+.bg-kiosk-icon-bg {
+  background-color: hsl(var(--kiosk-icon-bg));
+}
+
+.bg-kiosk-tile {
+  background-color: hsl(var(--kiosk-tile));
+}
+
+.bg-kiosk-tile-hover {
+  background-color: hsl(var(--kiosk-tile-hover));
+}
+
+.border-kiosk-tile-border {
+  border-color: hsl(var(--kiosk-tile-border));
+}
+
+.bg-kiosk-header {
+  background-color: hsl(var(--kiosk-header));
+}
+
+.text-kiosk-header-foreground {
+  color: hsl(var(--kiosk-header-foreground));
+}

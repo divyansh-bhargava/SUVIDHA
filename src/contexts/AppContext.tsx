@@ -54,6 +54,12 @@ interface Bill {
 interface AppContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
+  voiceLanguageSelected: boolean;
+  setVoiceLanguageSelected: (selected: boolean) => void;
+  voiceSuvidhaIdSelected: boolean;
+  setVoiceSuvidhaIdSelected: (selected: boolean) => void;
+  voiceServiceAction: string | null;
+  setVoiceServiceAction: (action: string | null) => void;
   t: (key: string) => string;
   isListening: boolean;
   setIsListening: (listening: boolean) => void;
@@ -303,6 +309,9 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
+  const [voiceLanguageSelected, setVoiceLanguageSelected] = useState(false);
+  const [voiceSuvidhaIdSelected, setVoiceSuvidhaIdSelected] = useState(false);
+  const [voiceServiceAction, setVoiceServiceAction] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [citizen, setCitizen] = useState<Citizen | null>(null);
@@ -433,6 +442,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       value={{
         language,
         setLanguage,
+        voiceLanguageSelected,
+        setVoiceLanguageSelected,
+        voiceSuvidhaIdSelected,
+        setVoiceSuvidhaIdSelected,
+        voiceServiceAction,
+        setVoiceServiceAction,
         t,
         isListening,
         setIsListening,

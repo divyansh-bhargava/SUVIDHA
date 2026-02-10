@@ -8,12 +8,14 @@ interface KioskLayoutProps {
   children: React.ReactNode;
   showHeader?: boolean;
   showBackButton?: boolean;
+  alwaysShowHeader?: boolean;
 }
 
 const KioskLayout: React.FC<KioskLayoutProps> = ({ 
   children, 
   showHeader = true,
-  showBackButton = true 
+  showBackButton = true,
+  alwaysShowHeader = false
 }) => {
   const { 
     t, 
@@ -61,11 +63,11 @@ const KioskLayout: React.FC<KioskLayoutProps> = ({
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-green-50 dark:from-slate-900 dark:to-slate-950 kiosk-mode flex flex-col relative">
       {/* Enhanced Header - Sticky Navigation */}
-      {showHeader && citizen && (
+      {showHeader && (citizen || alwaysShowHeader) && (
         <header className="sticky top-0 z-40 bg-gradient-to-r from-orange-500 via-white to-green-600 px-3 md:px-6 py-3 flex items-center justify-between shadow-lg border-b-4 border-orange-600 backdrop-blur-sm">
           {/* Left Section - Navigation */}
           <div className="flex items-center gap-2 md:gap-3">
-            {showBackButton && !isWelcomePage && location.pathname !== '/dashboard' && (
+            {showBackButton && !isWelcomePage && location.pathname !== '/dashboard' && location.pathname !== '/register' && (
               <button
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-1 md:gap-1.5 px-2 md:px-4 py-2 rounded-lg md:rounded-xl bg-slate-800/80 hover:bg-slate-800 text-white transition-all shadow-md font-medium text-sm"
@@ -74,13 +76,22 @@ const KioskLayout: React.FC<KioskLayoutProps> = ({
                 <span className="hidden sm:inline">{t('back')}</span>
               </button>
             )}
-            {location.pathname !== '/dashboard' && (
+            {location.pathname !== '/dashboard' && location.pathname !== '/register' && (
               <button
                 onClick={handleHome}
                 className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-2 rounded-lg md:rounded-xl bg-slate-800/80 hover:bg-slate-800 text-white transition-all shadow-md"
               >
                 <Home className="w-4 h-4" />
                 <span className="font-medium text-xs md:text-sm hidden sm:inline">{t('home')}</span>
+              </button>
+            )}
+            {location.pathname === '/register' && (
+              <button
+                onClick={() => navigate('/')}
+                className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-2 rounded-lg md:rounded-xl bg-slate-800/80 hover:bg-slate-800 text-white transition-all shadow-md"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span className="font-medium text-xs md:text-sm hidden sm:inline">{t('back')}</span>
               </button>
             )}
             {/* Government Branding */}
@@ -112,14 +123,16 @@ const KioskLayout: React.FC<KioskLayoutProps> = ({
 
           {/* Right Section - User Info & Actions */}
           <div className="flex items-center gap-1.5 md:gap-3">
-            {/* User Info Card */}
-            <div className="hidden md:flex items-center gap-3 px-3 md:px-4 py-2 rounded-xl bg-white/90 shadow-md border border-slate-200">
-              <User className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-              <div className="text-right">
-                <p className="font-semibold text-xs md:text-sm text-slate-800">{language === 'en' ? citizen.name : citizen.nameHi}</p>
-                <p className="text-[10px] md:text-xs text-slate-600">{citizen.suvidhaId}</p>
+            {/* User Info Card - Only show when logged in */}
+            {citizen && (
+              <div className="hidden md:flex items-center gap-3 px-3 md:px-4 py-2 rounded-xl bg-white/90 shadow-md border border-slate-200">
+                <User className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                <div className="text-right">
+                  <p className="font-semibold text-xs md:text-sm text-slate-800">{language === 'en' ? citizen.name : citizen.nameHi}</p>
+                  <p className="text-[10px] md:text-xs text-slate-600">{citizen.suvidhaId}</p>
+                </div>
               </div>
-            </div>
+            )}
             
             {/* Language Toggle */}
             <button
@@ -130,14 +143,16 @@ const KioskLayout: React.FC<KioskLayoutProps> = ({
               <span className="font-bold text-xs md:text-sm">{language === 'en' ? 'हिंदी' : 'EN'}</span>
             </button>
             
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-2 rounded-lg md:rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all shadow-md"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="font-medium text-xs md:text-sm hidden sm:inline">{t('logout')}</span>
-            </button>
+            {/* Logout - Only show when logged in */}
+            {citizen && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-2 rounded-lg md:rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all shadow-md"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="font-medium text-xs md:text-sm hidden sm:inline">{t('logout')}</span>
+              </button>
+            )}
           </div>
         </header>
       )}

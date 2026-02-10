@@ -69,7 +69,7 @@ interface SelectedDocument {
 
 const ServicePage: React.FC = () => {
   const { serviceType } = useParams<{ serviceType: string }>();
-  const { t, language, bills, payBill, citizen } = useApp();
+  const { t, language, bills, payBill, citizen, voiceServiceAction, setVoiceServiceAction } = useApp();
   const voiceAssistant = useVoiceAssistantContext();
   const navigate = useNavigate();
   
@@ -95,6 +95,14 @@ const ServicePage: React.FC = () => {
     }, 800);
     return () => clearTimeout(timer);
   }, [step, voiceAssistant.isActive]);
+
+  // Handle voice service action
+  useEffect(() => {
+    if (voiceServiceAction && step === 'select_type') {
+      handleServiceOptionSelect(voiceServiceAction);
+      setVoiceServiceAction(null);
+    }
+  }, [voiceServiceAction, step, setVoiceServiceAction]);
 
   const ServiceIcon = serviceIcons[serviceType || 'electricity'];
   const iconColor = serviceColors[serviceType || 'electricity'];
@@ -156,7 +164,7 @@ const ServicePage: React.FC = () => {
     if (selectedBill) {
       payBill(selectedBill.id);
     }
-    setStep('success');
+    // Don't change step here - let UnifiedPayment show its own success screen
   };
 
   const handleDocumentSelect = (requirementId: string, documentId: string) => {
@@ -452,6 +460,7 @@ const ServicePage: React.FC = () => {
             }}
             onPaymentComplete={handlePaymentComplete}
             onBack={() => setStep('input')}
+            onDone={() => navigate('/dashboard')}
           />
         )}
 

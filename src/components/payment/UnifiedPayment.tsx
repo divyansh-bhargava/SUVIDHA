@@ -25,6 +25,7 @@ interface UnifiedPaymentProps {
   details: PaymentDetails;
   onPaymentComplete: (method: string) => void;
   onBack: () => void;
+  onDone?: () => void;
 }
 
 type PaymentStep = 'review' | 'method' | 'processing' | 'success' | 'failure';
@@ -49,7 +50,7 @@ const getServiceEmoji = (serviceName: string): string => {
   return '📋';
 };
 
-const UnifiedPayment: React.FC<UnifiedPaymentProps> = ({ details, onPaymentComplete, onBack }) => {
+const UnifiedPayment: React.FC<UnifiedPaymentProps> = ({ details, onPaymentComplete, onBack, onDone }) => {
   const { language, t } = useApp();
   const voiceAssistant = useVoiceAssistantContext();
   const [step, setStep] = useState<PaymentStep>('review');
@@ -418,6 +419,16 @@ const UnifiedPayment: React.FC<UnifiedPaymentProps> = ({ details, onPaymentCompl
         <Smartphone className="w-6 h-6" />
         {language === 'en' ? 'Send Receipt to Mobile' : 'रसीद मोबाइल पर भेजें'}
       </button>
+
+      {/* Go to Dashboard */}
+      {onDone && (
+        <button
+          onClick={onDone}
+          className="kiosk-btn-ghost w-full flex items-center justify-center gap-3 py-5 text-lg mt-4"
+        >
+          {language === 'en' ? '🏠 Back to Home' : '🏠 होम पर वापस जाएं'}
+        </button>
+      )}
     </div>
   );
 };

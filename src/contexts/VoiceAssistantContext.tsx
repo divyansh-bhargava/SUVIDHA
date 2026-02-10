@@ -13,6 +13,9 @@ export interface VoiceAssistantContextType {
   interruptAndListen: () => void;
   speak: (text: string, onEnd?: () => void) => void;
   narratePage: (pageKey: string, extra?: Record<string, string>) => void;
+  narrateWelcome: () => void;
+  tapToSpeak: () => void;
+  stopListening: () => void;
 }
 
 const VoiceAssistantContext = createContext<VoiceAssistantContextType | undefined>(undefined);
@@ -25,6 +28,10 @@ export const useVoiceAssistantContext = () => {
 
 // Page narrations
 const PAGE_NARRATIONS: Record<string, { en: string; hi: string }> = {
+  welcome_screen: {
+    en: 'Welcome to SUVIDHA. Please select your language.',
+    hi: 'सुविधा में आपका स्वागत है। कृपया अपनी भाषा चुनें।',
+  },
   login_method: {
     en: 'You can log in using your SUVIDHA ID or by scanning your QR code. Please choose a login method on the screen.',
     hi: 'आप अपनी सुविधा ID या QR कोड स्कैन करके लॉगिन कर सकते हैं। कृपया स्क्रीन पर लॉगिन विधि चुनें।',
@@ -73,6 +80,23 @@ const PAGE_NARRATIONS: Record<string, { en: string; hi: string }> = {
     en: 'No bill was found for this consumer ID. Please check the number and try again.',
     hi: 'इस उपभोक्ता ID के लिए कोई बिल नहीं मिला। कृपया नंबर जांचें और पुनः प्रयास करें।',
   },
+  // Registration flow narrations
+  registration_basic_info: {
+    en: 'Please enter your details to create your SUVIDHA ID. Fill in your full name as per Aadhaar, date of birth, mobile number, and residential address. Then press Next.',
+    hi: 'अपनी सुविधा ID बनाने के लिए कृपया अपना विवरण दर्ज करें। आधार के अनुसार पूरा नाम, जन्म तिथि, मोबाइल नंबर और आवासीय पता भरें। फिर आगे दबाएं।',
+  },
+  registration_aadhaar_verify: {
+    en: 'To verify your identity, please enter your 12-digit Aadhaar number. An OTP will be sent to your Aadhaar-registered mobile number.',
+    hi: 'अपनी पहचान सत्यापित करने के लिए, कृपया अपना 12-अंकीय आधार नंबर दर्ज करें। आपके आधार-पंजीकृत मोबाइल नंबर पर OTP भेजा जाएगा।',
+  },
+  registration_otp_verify: {
+    en: 'Please enter the 6-digit OTP sent to your Aadhaar-linked mobile number. For demo, you can enter any 6-digit code.',
+    hi: 'कृपया अपने आधार से जुड़े मोबाइल नंबर पर भेजा गया 6-अंकीय OTP दर्ज करें। डेमो के लिए, आप कोई भी 6-अंकीय कोड दर्ज कर सकते हैं।',
+  },
+  registration_success: {
+    en: 'Your SUVIDHA ID has been created successfully. You will receive your physical ID card by post and digital ID via SMS. You can now log in and access all civic services.',
+    hi: 'आपकी सुविधा ID सफलतापूर्वक बन गई है। आपको डाक द्वारा भौतिक ID कार्ड और SMS द्वारा डिजिटल ID प्राप्त होगी। अब आप लॉगिन करके सभी नागरिक सेवाओं का उपयोग कर सकते हैं।',
+  },
 };
 
 // Intent system
@@ -82,6 +106,8 @@ interface Intent {
   response_en: string;
   response_hi: string;
   requiresAuth?: boolean;
+  languageCode?: 'en' | 'hi';
+  serviceAction?: string;
 }
 
 const INTENTS: { keywords: string[]; intent: Intent }[] = [
@@ -121,6 +147,12 @@ const INTENTS: { keywords: string[]; intent: Intent }[] = [
       response_en: 'Opening your Document Vault.', response_hi: 'आपका दस्तावेज़ वॉल्ट खोल रहा हूँ।' },
   },
   {
+    keywords: ['create suvidha', 'register', 'new id', 'sign up', 'create id', 'naya id banao', 'registration'],
+    intent: { action: 'navigate', route: '/register',
+      response_en: 'Opening SUVIDHA ID registration. You will need your Aadhaar for verification.',
+      response_hi: 'सुविधा ID पंजीकरण खोल रहा हूँ। सत्यापन के लिए आपको अपने आधार की आवश्यकता होगी।' },
+  },
+  {
     keywords: ['new connection', 'naya connection', 'apply connection'],
     intent: { action: 'navigate', route: '/service/electricity', requiresAuth: true,
       response_en: 'Opening new connection application.', response_hi: 'नया कनेक्शन आवेदन खोल रहा हूँ।' },
@@ -151,16 +183,65 @@ const INTENTS: { keywords: string[]; intent: Intent }[] = [
       response_en: 'Voice assistant turned off. Thank you!', response_hi: 'आवाज़ सहायक बंद। धन्यवाद!' },
   },
   {
-    keywords: ['login', 'log in', 'suvidha id', 'otp'],
+    keywords: ['suvidha id', 'by suvidha id', 'suvidha id se', 'otp login', 'login with id', 'id se login'],
+    intent: { action: 'select_suvidha_login',
+      response_en: 'Opening SUVIDHA ID login. Please enter your ID.',
+      response_hi: 'सुविधा ID लॉगिन खोल रहा हूँ। कृपया अपनी ID दर्ज करें।' },
+  },
+  {
+    keywords: ['login', 'log in'],
     intent: { action: 'guide_login',
       response_en: 'To log in, please enter your SUVIDHA ID on the screen and press Send OTP. Then enter the 6-digit code sent to your mobile.',
       response_hi: 'लॉगिन करने के लिए, कृपया स्क्रीन पर अपनी सुविधा ID दर्ज करें और OTP भेजें दबाएं। फिर मोबाइल पर आया 6-अंक का कोड दर्ज करें।' },
+  },
+  {
+    keywords: ['english', 'angrezi', 'अंग्रेजी', 'select english', 'i want english'],
+    intent: { action: 'select_language', route: '/', languageCode: 'en',
+      response_en: 'English selected. Taking you to the login page.',
+      response_hi: 'अंग्रेजी चुनी गई। लॉगिन पेज पर ले जा रहा हूँ।' },
+  },
+  {
+    keywords: ['hindi', 'हिंदी', 'hindī', 'select hindi', 'i want hindi', 'mujhe hindi chahiye'],
+    intent: { action: 'select_language', route: '/', languageCode: 'hi',
+      response_en: 'Hindi selected. Taking you to the login page.',
+      response_hi: 'हिंदी चुनी गई। लॉगिन पेज पर ले जा रहा हूँ।' },
   },
   {
     keywords: ['bill payment', 'pay bill', 'bill bharo', 'bill pay'],
     intent: { action: 'navigate', route: '/service/electricity', requiresAuth: true,
       response_en: 'Opening Bill Payment. You can pay electricity, water or gas bills.',
       response_hi: 'बिल भुगतान खोल रहा हूँ। आप बिजली, पानी या गैस बिल भर सकते हैं।' },
+  },
+  // Service page specific actions (when inside a service page)
+  {
+    keywords: ['pay bill', 'pay my bill', 'bill payment', 'bill bharo', 'bhugtan', 'mera bill'],
+    intent: { action: 'service_action', serviceAction: 'bill_payment', requiresAuth: true,
+      response_en: 'Opening Bill Payment.',
+      response_hi: 'बिल भुगतान खोल रहा हूँ।' },
+  },
+  {
+    keywords: ['new connection', 'naya connection', 'apply connection', 'connection lena'],
+    intent: { action: 'service_action', serviceAction: 'new_connection', requiresAuth: true,
+      response_en: 'Opening New Connection application. You will need to upload identity proof, address proof, and property documents.',
+      response_hi: 'नया कनेक्शन आवेदन खोल रहा हूँ। आपको पहचान प्रमाण, पता प्रमाण, और संपत्ति दस्तावेज़ अपलोड करने होंगे।' },
+  },
+  {
+    keywords: ['disconnection', 'disconnect', 'band karna', 'connection band'],
+    intent: { action: 'service_action', serviceAction: 'disconnection', requiresAuth: true,
+      response_en: 'Opening Disconnection request. You will need identity proof.',
+      response_hi: 'कनेक्शन बंद करने का अनुरोध खोल रहा हूँ। आपको पहचान प्रमाण अपलोड करना होगा।' },
+  },
+  {
+    keywords: ['name transfer', 'transfer name', 'naam badalna', 'naam transfer'],
+    intent: { action: 'service_action', serviceAction: 'name_transfer', requiresAuth: true,
+      response_en: 'Opening Name Transfer request. You will need identity proof of both parties and property transfer documents.',
+      response_hi: 'नाम हस्तांतरण अनुरोध खोल रहा हूँ। आपको दोनों पक्षों की पहचान और संपत्ति दस्तावेज़ अपलोड करने होंगे।' },
+  },
+  {
+    keywords: ['load change', 'load badalna', 'increase load', 'decrease load', 'load badhana', 'load ghatana'],
+    intent: { action: 'service_action', serviceAction: 'load_change', requiresAuth: true,
+      response_en: 'Opening Load Change request. You will need identity proof and load change application.',
+      response_hi: 'लोड परिवर्तन अनुरोध खोल रहा हूँ। आपको पहचान प्रमाण और आवेदन अपलोड करना होगा।' },
   },
 ];
 
@@ -173,14 +254,14 @@ const GREETING_LOGGED_IN_HI = "नमस्ते! मैं आपका आव
 const LOGIN_REQUIRED_EN = "You need to login first. Please choose a login method on the screen — SUVIDHA ID with OTP or QR Code scan.";
 const LOGIN_REQUIRED_HI = "पहले लॉगिन करना होगा। कृपया स्क्रीन पर लॉगिन विधि चुनें — सुविधा ID या QR कोड स्कैन।";
 
-const ERROR_EN = "I didn't hear that clearly. You can say 'Pay bill', 'New connection', 'Complaint', or 'Help'.";
-const ERROR_HI = "स्पष्ट सुनाई नहीं दिया। 'बिल भुगतान', 'नया कनेक्शन', 'शिकायत', या 'मदद' कहें।";
+const ERROR_EN = "I didn't understand that. You can say 'Pay bill', 'New connection', 'Complaint', or 'Help'.";
+const ERROR_HI = "समझ नहीं आया। 'बिल भुगतान', 'नया कनेक्शन', 'शिकायत', या 'मदद' कहें।";
 
-const SILENCE_EN = "I didn't hear anything. Please try again or use the touch screen.";
-const SILENCE_HI = "कुछ सुनाई नहीं दिया। कृपया दोबारा प्रयास करें या टच स्क्रीन का उपयोग करें।";
+const SILENCE_EN = "Listening stopped. Tap the microphone when you want to speak.";
+const SILENCE_HI = "सुनना बंद। बोलने के लिए माइक्रोफोन टैप करें।";
 
 export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { language, citizen } = useApp();
+  const { language, setLanguage, setVoiceLanguageSelected, setVoiceSuvidhaIdSelected, setVoiceServiceAction, bills, citizen } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -251,16 +332,8 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
         console.log('Speech error:', event.error);
         setIsListening(false);
         setLiveTranscript('');
-        if (event.error === 'no-speech' && isActiveRef.current) {
-          silenceCountRef.current += 1;
-          if (silenceCountRef.current >= 3) {
-            silenceCountRef.current = 0;
-            const msg = language === 'en' ? SILENCE_EN : SILENCE_HI;
-            speakFn(msg, () => startListening());
-          } else {
-            setTimeout(() => startListening(), 500);
-          }
-        }
+        // On no-speech or other errors, just stop listening quietly
+        // User can tap to speak again when ready
       };
 
       recognition.onend = () => { setIsListening(false); };
@@ -303,26 +376,27 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
         const response = language === 'en' ? intent.response_en : intent.response_hi;
         speakFn(response, () => {
           if (intent.route) navigate(intent.route);
-          setTimeout(() => startListening(), 2500);
+          // Don't auto-listen after navigation
         });
         break;
       }
       case 'help':
       case 'guide_login': {
         const response = language === 'en' ? intent.response_en : intent.response_hi;
-        speakFn(response, () => startListening());
+        speakFn(response);
+        // Don't auto-listen - user taps when ready
         break;
       }
       case 'repeat': {
         const lastMsg = lastAssistantMsg.current || (language === 'en' ? GREETING_EN : GREETING_HI);
-        speakFn(lastMsg, () => startListening());
+        speakFn(lastMsg);
+        // Don't auto-listen
         break;
       }
       case 'go_back': {
         const response = language === 'en' ? intent.response_en : intent.response_hi;
         speakFn(response, () => {
           navigate(-1);
-          setTimeout(() => startListening(), 1500);
         });
         break;
       }
@@ -331,23 +405,74 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
         speakFn(response, () => stopAssistant());
         break;
       }
+      case 'select_language': {
+        if (intent.languageCode) {
+          setLanguage(intent.languageCode);
+          setVoiceLanguageSelected(true);
+        }
+        const response = intent.languageCode === 'en' ? intent.response_en : intent.response_hi;
+        speakFn(response, () => {
+          navigate('/');
+        });
+        break;
+      }
+      case 'select_suvidha_login': {
+        setVoiceSuvidhaIdSelected(true);
+        const response = language === 'en' ? intent.response_en : intent.response_hi;
+        speakFn(response);
+        break;
+      }
+      case 'service_action': {
+        if (intent.serviceAction) {
+          setVoiceServiceAction(intent.serviceAction);
+          let response = language === 'en' ? intent.response_en : intent.response_hi;
+          
+          // If bill payment, announce the bill amount
+          if (intent.serviceAction === 'bill_payment') {
+            const path = location.pathname;
+            let serviceType = 'electricity';
+            if (path.includes('/service/water')) serviceType = 'water';
+            else if (path.includes('/service/gas')) serviceType = 'gas';
+            
+            const bill = bills.find(b => b.service === serviceType && b.status === 'unpaid');
+            if (bill) {
+              const amountStr = bill.amount.toLocaleString('en-IN');
+              response = language === 'en' 
+                ? `Opening Bill Payment. Your ${serviceType} bill is ${amountStr} rupees for ${bill.period}.`
+                : `बिल भुगतान खोल रहा हूँ। आपका ${serviceType === 'electricity' ? 'बिजली' : serviceType === 'water' ? 'पानी' : 'गैस'} बिल ${amountStr} रुपये है ${bill.period} के लिए।`;
+            }
+          }
+          speakFn(response);
+        }
+        break;
+      }
       default: {
         const response = language === 'en' ? intent.response_en : intent.response_hi;
-        speakFn(response, () => startListening());
+        speakFn(response);
+        // Don't auto-listen
       }
     }
-  }, [language, citizen, navigate, detectIntent, speakFn, startListening]);
+  }, [language, citizen, navigate, detectIntent, speakFn]);
 
   const processCommandRef = useRef(processCommand);
   useEffect(() => { processCommandRef.current = processCommand; }, [processCommand]);
+
+  // Bilingual welcome narration (speaks both English and Hindi)
+  const narrateWelcome = useCallback(() => {
+    if (!isActiveRef.current) return;
+    const bilingualText = 'Welcome to SUVIDHA. Please select your language. ... सुविधा में आपका स्वागत है। कृपया अपनी भाषा चुनें।';
+    speakFn(bilingualText);
+    // Don't auto-listen - user will tap to speak when ready
+  }, [speakFn]);
 
   const narratePage = useCallback((pageKey: string, _extra?: Record<string, string>) => {
     if (!isActiveRef.current) return;
     const narration = PAGE_NARRATIONS[pageKey];
     if (!narration) return;
     const text = language === 'en' ? narration.en : narration.hi;
-    speakFn(text, () => startListening());
-  }, [language, speakFn, startListening]);
+    speakFn(text);
+    // Don't auto-listen - user will tap to speak when ready
+  }, [language, speakFn]);
 
   const startAssistant = useCallback(() => {
     setIsActive(true);
@@ -357,9 +482,10 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
       ? (language === 'en' ? GREETING_LOGGED_IN_EN : GREETING_LOGGED_IN_HI)
       : (language === 'en' ? GREETING_EN : GREETING_HI);
     setTimeout(() => {
-      speakFn(greeting, () => startListening());
+      speakFn(greeting);
+      // Don't auto-listen - user taps mic when ready to speak
     }, 300);
-  }, [language, citizen, speakFn, startListening]);
+  }, [language, citizen, speakFn]);
 
   const stopAssistant = useCallback(() => {
     window.speechSynthesis.cancel();
@@ -367,6 +493,29 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
     setIsActive(false);
     setIsListening(false);
     setIsSpeaking(false);
+    setLiveTranscript('');
+  }, []);
+
+  // Tap to speak - user initiates listening manually
+  const tapToSpeak = useCallback(() => {
+    if (!isActiveRef.current) {
+      // If assistant not active, start it first
+      setIsActive(true);
+    }
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    // Start listening
+    startListening();
+  }, [startListening]);
+
+  // Stop listening manually
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
+      recognitionRef.current = null;
+    }
+    setIsListening(false);
     setLiveTranscript('');
   }, []);
 
@@ -380,7 +529,9 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
   useEffect(() => {
     if (!isActiveRef.current) return;
     const path = location.pathname;
-    if (path === '/dashboard' && citizen) {
+    if (path === '/' || path === '/welcome') {
+      setTimeout(() => narrateWelcome(), 500);
+    } else if (path === '/dashboard' && citizen) {
       setTimeout(() => narratePage('dashboard'), 1000);
     } else if (path === '/complaint/register' && citizen) {
       // Could add complaint narration
@@ -389,7 +540,7 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
     } else if (path === '/documents' && citizen) {
       // Could add documents narration
     }
-  }, [location.pathname, citizen, narratePage]);
+  }, [location.pathname, citizen, narratePage, narrateWelcome]);
 
   useEffect(() => {
     return () => {
@@ -414,6 +565,9 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
     interruptAndListen,
     speak: speakFn,
     narratePage,
+    narrateWelcome,
+    tapToSpeak,
+    stopListening,
   };
 
   return (

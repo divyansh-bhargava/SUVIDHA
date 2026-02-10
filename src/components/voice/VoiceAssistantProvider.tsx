@@ -15,7 +15,7 @@ const VoiceAssistantUI: React.FC = () => {
       isSpeaking={assistant.isSpeaking}
       liveTranscript={assistant.liveTranscript}
       lastSpokenText={assistant.lastSpokenText}
-      onTapMic={assistant.interruptAndListen}
+      onTapMic={assistant.tapToSpeak}
       onClose={assistant.stopAssistant}
       onStart={assistant.startAssistant}
       language={language}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '@/contexts/AppContext';
 import { useVoiceAssistantContext } from '@/contexts/VoiceAssistantContext';
 import { Globe, QrCode, Smartphone, Shield, FileCheck, ChevronRight, ArrowLeft, Fingerprint, Mic, Hand } from 'lucide-react';
@@ -22,7 +22,7 @@ const languageOptions: { code: SupportedLanguage; name: string; nativeName: stri
 ];
 
 const WelcomeScreen: React.FC = () => {
-  const { t, language, setLanguage, login } = useApp();
+  const { t, language, setLanguage, voiceLanguageSelected, setVoiceLanguageSelected, voiceSuvidhaIdSelected, setVoiceSuvidhaIdSelected, login } = useApp();
   const navigate = useNavigate();
   const voiceAssistant = useVoiceAssistantContext();
   const [showLogin, setShowLogin] = useState(false);
@@ -78,6 +78,34 @@ const WelcomeScreen: React.FC = () => {
       setTimeout(() => voiceAssistant.narratePage('login_method'), 500);
     }
   }, [showLogin, loginMethod, voiceAssistant.isActive]);
+
+  // Auto-advance to login when language selected via voice
+  useEffect(() => {
+    if (voiceLanguageSelected && !showLogin) {
+      setShowLogin(true);
+      setVoiceLanguageSelected(false);
+    }
+  }, [voiceLanguageSelected, showLogin, setVoiceLanguageSelected]);
+
+  // Auto-select suvidha ID login when selected via voice
+  useEffect(() => {
+    if (voiceSuvidhaIdSelected && showLogin && !loginMethod) {
+      setLoginMethod('otp');
+      setVoiceSuvidhaIdSelected(false);
+      if (voiceAssistant.isActive) {
+        setTimeout(() => voiceAssistant.narratePage('login_id_entry'), 300);
+      }
+    }
+  }, [voiceSuvidhaIdSelected, showLogin, loginMethod, setVoiceSuvidhaIdSelected, voiceAssistant]);
+
+  // Voice assistant is started manually by user tapping the mic button
+
+  // Narrate welcome when voice assistant becomes active on welcome screen
+  useEffect(() => {
+    if (!showLogin && voiceAssistant.isActive) {
+      setTimeout(() => voiceAssistant.narrateWelcome(), 300);
+    }
+  }, [voiceAssistant.isActive, showLogin]);
 
   // Language Selection Screen
   if (!showLogin) {
@@ -300,7 +328,20 @@ const WelcomeScreen: React.FC = () => {
                 </button>
               </div>
 
-
+              {/* Create New SUVIDHA ID */}
+              <div className="mt-6 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-50 to-green-50 rounded-xl border-2 border-orange-200">
+                  <span className="text-slate-600">
+                    {language === 'en' ? "Don't have a SUVIDHA ID?" : 'सुविधा ID नहीं है?'}
+                  </span>
+                  <Link
+                    to="/register"
+                    className="font-bold text-orange-600 hover:text-orange-700 underline underline-offset-2 transition-colors"
+                  >
+                    {language === 'en' ? 'Create Now' : 'अभी बनाएं'}
+                  </Link>
+                </div>
+              </div>
 
               {/* Demo IDs */}
               <div className="pt-5 border-t-2 border-slate-200 dark:border-slate-700">

@@ -79,7 +79,7 @@ const RecentActivity: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+      <h3 className="text-2xl font-bold text-foreground flex items-center gap-2">
         <Clock className="w-6 h-6 text-primary" />
         {language === 'en' ? 'Recent Activity' : 'हाल की गतिविधि'}
       </h3>
@@ -94,7 +94,7 @@ const RecentActivity: React.FC = () => {
           return (
             <div
               key={activity.id}
-              className="kiosk-card p-4 flex items-center justify-between hover:border-primary/30 transition-colors"
+              className="kiosk-card p-4 flex items-center justify-between hover:border-primary/30 hover:shadow-lg transition-all"
             >
               <div className="flex items-center gap-4">
                 {/* Service Icon */}

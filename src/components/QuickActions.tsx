@@ -10,7 +10,7 @@ const QuickActions: React.FC = () => {
   const actions = [
     {
       icon: CreditCard,
-      label: language === 'en' ? 'Pay Bill' : 'बिल भुगतान',
+      label: language === 'en' ? 'Pay electricity Bill' : 'बिजली बिल भुगतान',
       path: '/service/electricity',
       color: 'text-primary',
       bgColor: 'bg-primary/10',
@@ -41,25 +41,27 @@ const QuickActions: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-foreground">
+        <h3 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <span className="text-2xl">⚡</span>
           {language === 'en' ? 'Quick Actions' : 'त्वरित कार्रवाई'}
         </h3>
-        <p className="text-sm text-muted-foreground italic">
-          {language === 'en' ? '"Reduce steps, not screens"' : '"कदम कम करें, स्क्रीन नहीं"'}
+        <p className="text-sm text-muted-foreground italic hidden md:block">
+          {language === 'en' ? '"One-tap convenience"' : '"एक-टैप सुविधा"'}
         </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {actions.map((action) => (
+        {actions.map((action, index) => (
           <button
             key={action.path}
             onClick={() => navigate(action.path)}
-            className="kiosk-card p-5 flex flex-col items-center gap-3 hover:border-primary/30 hover:shadow-kiosk transition-all group"
+            className="kiosk-card p-5 flex flex-col items-center gap-3 hover:border-primary/30 hover:shadow-lg transition-all group hover:-translate-y-1"
+            style={{ animationDelay: `${index * 0.05}s` }}
           >
             <div className={`w-14 h-14 rounded-2xl ${action.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
               <action.icon className={`w-7 h-7 ${action.color}`} />
             </div>
-            <span className="text-base font-semibold text-foreground text-center">
+            <span className="text-base font-semibold text-foreground text-center leading-tight">
               {action.label}
             </span>
           </button>

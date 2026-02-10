@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '@/contexts/AppContext';
 import KioskLayout from '@/components/KioskLayout';
 import ServiceTile from '@/components/ServiceTile';
-import CitizenSummaryCard from '@/components/CitizenSummaryCard';
+import CitizenWelcome from '@/components/CitizenWelcome';
 import RecentActivity from '@/components/RecentActivity';
 import DocumentsShortcut from '@/components/DocumentsShortcut';
 import QuickActions from '@/components/QuickActions';
@@ -73,10 +73,10 @@ const Dashboard: React.FC = () => {
 
   return (
     <KioskLayout>
-      <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
-        {/* Citizen Summary Card */}
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6 py-8">
+        {/* Citizen Welcome - Combined Component */}
         <div className="animate-slide-up">
-          <CitizenSummaryCard />
+          <CitizenWelcome />
         </div>
 
         {/* Admin Access */}
@@ -84,31 +84,36 @@ const Dashboard: React.FC = () => {
           <div className="animate-slide-up" style={{ animationDelay: '0.05s' }}>
             <button
               onClick={() => navigate('/admin')}
-              className="w-full kiosk-card flex items-center justify-between p-5 hover:border-primary/30 transition-colors cursor-pointer bg-primary/5"
+              className="w-full rounded-2xl flex items-center justify-between p-6 transition-all cursor-pointer bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <UserCog className="w-7 h-7 text-primary" />
+                <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <UserCog className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-left">
-                  <h3 className="text-xl font-semibold text-foreground">{t('adminDashboard')}</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="text-2xl font-bold text-white">{t('adminDashboard')}</h3>
+                  <p className="text-white/90">
                     {language === 'en' ? 'Manage requests and approvals' : 'अनुरोध और अनुमोदन प्रबंधित करें'}
                   </p>
                 </div>
               </div>
-              <span className="text-3xl text-primary">→</span>
+              <span className="text-4xl text-white">→</span>
             </button>
           </div>
         )}
 
         {/* Services Grid */}
         <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <h3 className="text-2xl font-semibold text-foreground mb-5 flex items-center gap-3">
-            <FileText className="w-7 h-7 text-primary" />
-            {t('services')}
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="mb-5">
+            <h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <FileText className="w-7 h-7 text-primary" />
+              {t('services')}
+            </h3>
+            <p className="text-muted-foreground text-sm mt-1">
+              {language === 'en' ? 'Quick access to essential services' : 'आवश्यक सेवाओं तक त्वरित पहुंच'}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {services.map((service) => (
               <ServiceTile
                 key={service.path}

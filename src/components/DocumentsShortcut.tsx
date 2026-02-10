@@ -46,15 +46,15 @@ const DocumentsShortcut: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+        <h3 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <FolderOpen className="w-6 h-6 text-success" />
           {language === 'en' ? 'My Documents' : 'मेरे दस्तावेज़'}
         </h3>
         <button
           onClick={() => navigate('/documents')}
-          className="text-primary font-medium hover:underline"
+          className="text-primary font-semibold hover:underline text-sm flex items-center gap-1"
         >
-          {language === 'en' ? 'View All →' : 'सभी देखें →'}
+          {language === 'en' ? 'View All' : 'सभी देखें'} →
         </button>
       </div>
 
@@ -62,7 +62,7 @@ const DocumentsShortcut: React.FC = () => {
         {displayDocs.map((doc) => (
           <div
             key={doc.id}
-            className={`kiosk-card p-4 flex items-center justify-between ${
+            className={`kiosk-card p-4 flex items-center justify-between hover:shadow-lg transition-all ${
               doc.status === 'invalid' ? 'opacity-60 border-destructive/30' : ''
             }`}
           >

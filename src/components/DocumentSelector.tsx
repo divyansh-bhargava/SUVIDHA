@@ -116,18 +116,18 @@ const DocumentSelector: React.FC<DocumentSelectorProps> = ({
     });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-slide-up p-6 lg:p-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="kiosk-card bg-accent/5 border-accent/30">
+      <div className="kiosk-card bg-gradient-to-r from-accent/10 to-primary/10 border-accent/30 hover:shadow-lg transition-all">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl">📋</span>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/30 to-primary/30 flex items-center justify-center flex-shrink-0 shadow-md">
+            <span className="text-3xl">📋</span>
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">
+            <h3 className="text-xl font-bold text-foreground mb-1">
               {language === 'en' ? 'Required Documents' : 'आवश्यक दस्तावेज़'}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               {language === 'en' 
                 ? 'Select from saved documents or upload new ones via QR'
                 : 'सहेजे गए दस्तावेज़ों में से चुनें या QR के माध्यम से नए अपलोड करें'}
@@ -137,42 +137,49 @@ const DocumentSelector: React.FC<DocumentSelectorProps> = ({
       </div>
 
       {/* AI Pre-Check Info */}
-      <div className="kiosk-card bg-primary/5 border-primary/30">
+      {/* <div className="kiosk-card bg-gradient-to-r from-primary/10 to-blue-500/10 border-primary/30 hover:shadow-lg transition-all">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl">🤖</span>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-blue-500/30 flex items-center justify-center flex-shrink-0 shadow-md animate-pulse-subtle">
+            <span className="text-3xl">🤖</span>
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">
+            <h3 className="text-xl font-bold text-foreground mb-1">
               {language === 'en' ? 'AI Pre-Check Active' : 'AI पूर्व-जांच सक्रिय'}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               {language === 'en' 
                 ? 'Documents will be automatically checked for: Format (PDF/JPG), Clarity (not blurry), Completeness'
                 : 'दस्तावेज़ों की स्वचालित जांच: प्रारूप (PDF/JPG), स्पष्टता (धुंधला नहीं), पूर्णता'}
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Document Requirements List */}
       <div className="space-y-4">
-        {requirements.map((requirement) => {
+        {requirements.map((requirement, index) => {
           const savedDocs = matchingDocuments(requirement);
           const selected = getSelectedDoc(requirement.id);
 
           return (
-            <div key={requirement.id} className="kiosk-card">
+            <div 
+              key={requirement.id} 
+              className="kiosk-card hover:shadow-lg hover:border-primary/30 transition-all duration-300 animate-slide-up"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-primary" />
+                  </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">
+                    <h4 className="text-lg font-bold text-foreground">
                       {language === 'en' ? requirement.name : requirement.nameHi}
                     </h4>
                     {requirement.required && (
-                      <span className="text-xs text-destructive">
-                        {language === 'en' ? '* Required' : '* आवश्यक'}
+                      <span className="text-xs font-bold text-destructive flex items-center gap-1">
+                        <span>⚠️</span>
+                        {language === 'en' ? 'Required' : 'आवश्यक'}
                       </span>
                     )}
                   </div>
@@ -189,7 +196,8 @@ const DocumentSelector: React.FC<DocumentSelectorProps> = ({
               {/* Saved Documents */}
               {savedDocs.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-sm text-muted-foreground mb-2">
+                  <p className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+                    <span>💾</span>
                     {language === 'en' ? 'Previously Uploaded:' : 'पहले अपलोड किया गया:'}
                   </p>
                   <div className="space-y-2">
@@ -197,32 +205,32 @@ const DocumentSelector: React.FC<DocumentSelectorProps> = ({
                       <button
                         key={doc.id}
                         onClick={() => onDocumentSelect(requirement.id, doc.id)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                        className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-lg ${
                           selected?.documentId === doc.id 
-                            ? 'border-primary bg-primary/10' 
-                            : 'border-border hover:border-primary/50'
+                            ? 'border-primary bg-gradient-to-r from-primary/10 to-accent/10 shadow-md' 
+                            : 'border-border hover:border-primary/50 hover:-translate-y-0.5'
                         }`}
                       >
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
                           selected?.documentId === doc.id 
-                            ? 'border-primary bg-primary' 
+                            ? 'border-primary bg-primary scale-110' 
                             : 'border-muted-foreground'
                         }`}>
                           {selected?.documentId === doc.id && (
-                            <Check className="w-4 h-4 text-primary-foreground" />
+                            <Check className="w-5 h-5 text-primary-foreground" />
                           )}
                         </div>
                         <div className="flex-1 text-left">
-                          <p className="font-medium text-foreground">{doc.name}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="font-bold text-foreground">{doc.name}</p>
+                          <p className="text-xs text-muted-foreground font-medium">
                             {language === 'en' ? 'Uploaded:' : 'अपलोड:'} {doc.uploadDate}
                           </p>
                         </div>
-                        <span className="text-xs px-2 py-1 rounded-full bg-success/10 text-success border border-success/30">
-                          {language === 'en' ? 'Saved' : 'सहेजा गया'}
+                        <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-success/10 text-success border-2 border-success/30">
+                          {language === 'en' ? '✓ Saved' : '✓ सहेजा गया'}
                         </span>
                         {doc.status === 'valid' && (
-                          <CheckCircle2 className="w-5 h-5 text-success" />
+                          <CheckCircle2 className="w-6 h-6 text-success" />
                         )}
                       </button>
                     ))}
@@ -234,18 +242,18 @@ const DocumentSelector: React.FC<DocumentSelectorProps> = ({
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowQrUpload(requirement.id)}
-                  className="flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 p-5 rounded-xl border-2 border-dashed border-primary/40 hover:border-primary hover:bg-primary/5 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                 >
-                  <QrCode className="w-6 h-6 text-primary" />
-                  <span className="font-medium text-primary">
-                    {language === 'en' ? 'Scan QR to Upload' : 'अपलोड के लिए QR स्कैन करें'}
+                  <QrCode className="w-7 h-7 text-primary" />
+                  <span className="font-bold text-primary text-base">
+                    {language === 'en' ? 'Scan QR' : 'QR स्कैन करें'}
                   </span>
                 </button>
                 
-                <label className="flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-accent/30 hover:border-accent/50 hover:bg-accent/5 transition-colors cursor-pointer">
-                  <Upload className="w-6 h-6 text-accent" />
-                  <span className="font-medium text-accent">
-                    {language === 'en' ? 'Upload New' : 'नया अपलोड करें'}
+                <label className="flex-1 flex items-center justify-center gap-2 p-5 rounded-xl border-2 border-dashed border-accent/40 hover:border-accent hover:bg-accent/5 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:scale-95 cursor-pointer">
+                  <Upload className="w-7 h-7 text-accent" />
+                  <span className="font-bold text-accent text-base">
+                    {language === 'en' ? 'Upload New' : 'नया अपलोड'}
                   </span>
                   <input
                     type="file"
@@ -330,16 +338,24 @@ const DocumentSelector: React.FC<DocumentSelectorProps> = ({
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
-        <button onClick={onBack} className="kiosk-btn-ghost flex-1">
-          {t('back')}
+      <div className="flex gap-4 pt-4">
+        <button 
+          onClick={onBack} 
+          className="kiosk-btn-ghost flex-1 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all"
+        >
+          <span className="text-2xl">←</span>
+          <span className="text-lg">{t('back')}</span>
         </button>
         <button 
           onClick={onConfirm} 
           disabled={!allRequiredSelected}
-          className={`flex-1 ${allRequiredSelected ? 'kiosk-btn-primary' : 'kiosk-btn-secondary opacity-50 cursor-not-allowed'}`}
+          className={`flex-1 text-lg font-bold transition-all ${
+            allRequiredSelected 
+              ? 'kiosk-btn-primary hover:scale-[1.02]' 
+              : 'kiosk-btn-secondary opacity-50 cursor-not-allowed'
+          }`}
         >
-          {language === 'en' ? 'Continue' : 'जारी रखें'}
+          {language === 'en' ? 'Continue →' : 'जारी रखें →'}
         </button>
       </div>
     </div>

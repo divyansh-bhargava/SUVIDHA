@@ -5,7 +5,7 @@ import { useVoiceAssistantContext } from '@/contexts/VoiceAssistantContext';
 import { Globe, QrCode, Smartphone, Shield, FileCheck, ChevronRight, ArrowLeft, Fingerprint, Mic, Hand } from 'lucide-react';
 import OTPLogin from '@/components/login/OTPLogin';
 import AppScanLogin from '@/components/login/AppScanLogin';
-import india from "../../public/img/india-emblem.png";
+import india from "/img/india-emblem.png";
 
 type LoginMethod = 'otp' | 'app' | null;
 type SupportedLanguage = 'en' | 'hi' | 'ta' | 'te' | 'bn' | 'mr' | 'gu' | 'kn';

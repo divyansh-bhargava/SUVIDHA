@@ -61,18 +61,18 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-slide-up p-6 lg:p-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="kiosk-card bg-warning/5 border-warning/30">
+      <div className="kiosk-card bg-gradient-to-r from-amber-100 to-orange-100 dark:from-warning/20 dark:to-orange-900/20 border-warning/40 hover:shadow-lg transition-all">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-warning/20 flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-6 h-6 text-warning" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md animate-pulse-subtle">
+            <AlertTriangle className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">
+            <h3 className="text-xl font-bold text-foreground mb-1">
               {language === 'en' ? 'Review Before Submission' : 'जमा करने से पहले समीक्षा करें'}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-muted-foreground font-medium">
               {language === 'en' 
                 ? 'Please verify all information is correct. You can edit fields if needed.'
                 : 'कृपया सत्यापित करें कि सभी जानकारी सही है। आप आवश्यकता होने पर फ़ील्ड संपादित कर सकते हैं।'}
@@ -82,47 +82,57 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
       </div>
 
       {/* Application Type */}
-      <div className="kiosk-card">
-        <h3 className="text-xl font-semibold text-foreground mb-2">
-          {language === 'en' ? title : titleHi}
-        </h3>
-        <p className="text-muted-foreground">
+      <div className="kiosk-card hover:shadow-lg transition-all hover:border-primary/30">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <FileText className="w-6 h-6 text-primary" />
+          </div>
+          <h3 className="text-2xl font-black text-foreground">
+            {language === 'en' ? title : titleHi}
+          </h3>
+        </div>
+        <p className="text-base text-muted-foreground ml-15 font-medium">
           {language === 'en' 
-            ? 'Application details auto-filled from your profile'
-            : 'आपकी प्रोफ़ाइल से स्वतः भरे गए आवेदन विवरण'}
+            ? '✨ Application details auto-filled from your profile'
+            : '✨ आपकी प्रोफ़ाइल से स्वतः भरे गए आवेदन विवरण'}
         </p>
       </div>
 
       {/* Form Fields */}
-      <div className="kiosk-card">
+      <div className="kiosk-card hover:shadow-lg transition-all">
         <div className="flex items-center justify-between mb-6">
-          <h4 className="text-lg font-semibold text-foreground">
+          <h4 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <span>👤</span>
             {language === 'en' ? 'Applicant Details' : 'आवेदक विवरण'}
           </h4>
           <button
             onClick={() => setEditMode(!editMode)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all font-bold hover:scale-105 active:scale-95 ${
               editMode 
-                ? 'bg-primary text-primary-foreground' 
-                : 'bg-muted hover:bg-muted/80 text-foreground'
+                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg' 
+                : 'bg-muted hover:bg-muted/80 text-foreground border-2 border-border'
             }`}
           >
-            <Edit3 className="w-4 h-4" />
+            <Edit3 className="w-5 h-5" />
             {editMode 
-              ? (language === 'en' ? 'Done Editing' : 'संपादन पूर्ण')
+              ? (language === 'en' ? '✓ Done Editing' : '✓ संपादन पूर्ण')
               : (language === 'en' ? 'Edit Details' : 'विवरण संपादित करें')
             }
           </button>
         </div>
 
         <div className="space-y-4">
-          {editedFields.map((field) => (
-            <div key={field.key} className="flex items-start gap-4 p-4 rounded-xl bg-muted/50">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+          {editedFields.map((field, index) => (
+            <div 
+              key={field.key} 
+              className="flex items-start gap-4 p-5 rounded-xl bg-gradient-to-r from-muted/50 to-muted/30 hover:shadow-md transition-all animate-slide-up"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
                 {getFieldIcon(field.key)}
               </div>
               <div className="flex-1">
-                <label className="text-sm text-muted-foreground">
+                <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
                   {language === 'en' ? field.label : field.labelHi}
                 </label>
                 {editMode && field.editable ? (
@@ -130,15 +140,15 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
                     type={field.type || 'text'}
                     value={field.value}
                     onChange={(e) => handleFieldChange(field.key, e.target.value)}
-                    className="w-full mt-1 p-2 rounded-lg border border-primary/30 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full mt-2 p-3 rounded-xl border-2 border-primary/30 bg-background text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                   />
                 ) : (
-                  <p className="font-medium text-foreground mt-1">{field.value}</p>
+                  <p className="text-lg font-bold text-foreground mt-1">{field.value}</p>
                 )}
               </div>
               {field.editable && (
-                <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                  {language === 'en' ? 'Editable' : 'संपादन योग्य'}
+                <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/30">
+                  {language === 'en' ? '✏️ Editable' : '✏️ संपादन योग्य'}
                 </span>
               )}
             </div>
@@ -147,20 +157,26 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
       </div>
 
       {/* Documents Summary */}
-      <div className="kiosk-card">
-        <h4 className="text-lg font-semibold text-foreground mb-4">
+      <div className="kiosk-card hover:shadow-lg transition-all">
+        <h4 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+          <span>📄</span>
           {language === 'en' ? 'Attached Documents' : 'संलग्न दस्तावेज़'}
         </h4>
         <div className="space-y-3">
           {documents.map((doc, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-              <FileText className="w-5 h-5 text-primary" />
-              <span className="flex-1 font-medium text-foreground">{doc.name}</span>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-success" />
-                <span className="text-sm text-success">
+            <div 
+              key={index} 
+              className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-success/5 to-green-500/5 border-2 border-success/20 hover:shadow-md transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success/20 to-green-500/20 flex items-center justify-center">
+                <FileText className="w-6 h-6 text-success" />
+              </div>
+              <span className="flex-1 text-lg font-bold text-foreground">{doc.name}</span>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-success/10">
+                <CheckCircle2 className="w-6 h-6 text-success" />
+                <span className="text-sm font-bold text-success">
                   {doc.status === 'valid' 
-                    ? (language === 'en' ? 'Verified' : 'सत्यापित')
+                    ? (language === 'en' ? '✓ Verified' : '✓ सत्यापित')
                     : (language === 'en' ? 'Pending' : 'लंबित')
                   }
                 </span>
@@ -172,23 +188,23 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
 
       {/* Save to Documents Permission */}
       {onSaveToDocuments && (
-        <div className="kiosk-card">
+        <div className="kiosk-card hover:shadow-lg transition-all border-accent/30 bg-gradient-to-r from-accent/5 to-teal-500/5">
           <label className="flex items-start gap-4 cursor-pointer">
             <div 
               onClick={() => setSavePermission(!savePermission)}
-              className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
+              className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all hover:scale-110 ${
                 savePermission 
-                  ? 'bg-primary border-primary' 
-                  : 'border-muted-foreground'
+                  ? 'bg-gradient-to-br from-accent to-teal-500 border-accent shadow-md' 
+                  : 'border-muted-foreground hover:border-accent'
               }`}
             >
-              {savePermission && <CheckCircle2 className="w-4 h-4 text-primary-foreground" />}
+              {savePermission && <CheckCircle2 className="w-6 h-6 text-white" />}
             </div>
             <div>
-              <p className="font-medium text-foreground">
+              <p className="text-lg font-bold text-foreground mb-1">
                 {language === 'en' 
-                  ? 'Save new documents to my profile'
-                  : 'नए दस्तावेज़ मेरी प्रोफ़ाइल में सहेजें'}
+                  ? '💾 Save new documents to my profile'
+                  : '💾 नए दस्तावेज़ मेरी प्रोफ़ाइल में सहेजें'}
               </p>
               <p className="text-sm text-muted-foreground">
                 {language === 'en' 
@@ -201,23 +217,23 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
       )}
 
       {/* Acknowledgement */}
-      <div className="kiosk-card border-primary/30">
+      <div className="kiosk-card border-2 border-primary/40 bg-gradient-to-r from-primary/5 to-blue-500/5 hover:shadow-lg transition-all">
         <label className="flex items-start gap-4 cursor-pointer">
           <div 
             onClick={() => setAcknowledged(!acknowledged)}
-            className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
+            className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all hover:scale-110 ${
               acknowledged 
-                ? 'bg-primary border-primary' 
-                : 'border-muted-foreground'
+                ? 'bg-gradient-to-br from-primary to-blue-600 border-primary shadow-md' 
+                : 'border-muted-foreground hover:border-primary'
             }`}
           >
-            {acknowledged && <CheckCircle2 className="w-4 h-4 text-primary-foreground" />}
+            {acknowledged && <CheckCircle2 className="w-6 h-6 text-white" />}
           </div>
           <div>
-            <p className="font-medium text-foreground">
+            <p className="text-lg font-bold text-foreground mb-1">
               {language === 'en' 
-                ? 'I confirm all information is correct'
-                : 'मैं पुष्टि करता हूं कि सभी जानकारी सही है'}
+                ? '✅ I confirm all information is correct'
+                : '✅ मैं पुष्टि करता हूं कि सभी जानकारी सही है'}
             </p>
             <p className="text-sm text-muted-foreground">
               {language === 'en' 
@@ -229,16 +245,24 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
-        <button onClick={onBack} className="kiosk-btn-ghost flex-1">
-          {t('back')}
+      <div className="flex gap-4 pt-4">
+        <button 
+          onClick={onBack} 
+          className="kiosk-btn-ghost flex-1 flex items-center justify-center gap-2 hover:scale-[1.02] transition-all"
+        >
+          <span className="text-2xl">←</span>
+          <span className="text-lg">{t('back')}</span>
         </button>
         <button 
           onClick={() => onConfirm(editedFields)} 
           disabled={!acknowledged}
-          className={`flex-1 ${acknowledged ? 'kiosk-btn-success' : 'kiosk-btn-secondary opacity-50 cursor-not-allowed'}`}
+          className={`flex-1 text-lg font-bold transition-all ${
+            acknowledged 
+              ? 'kiosk-btn-success hover:scale-[1.02]' 
+              : 'kiosk-btn-secondary opacity-50 cursor-not-allowed'
+          }`}
         >
-          {t('confirmSubmit')}
+          {language === 'en' ? '✓ Confirm & Submit →' : '✓ पुष्टि और जमा करें →'}
         </button>
       </div>
     </div>

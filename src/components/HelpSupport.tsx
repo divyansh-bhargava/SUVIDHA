@@ -51,26 +51,27 @@ const HelpSupport: React.FC = () => {
       {/* Help Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="w-full kiosk-card p-4 flex items-center justify-center gap-3 hover:border-primary/30 transition-colors bg-muted/30"
+        className="w-full kiosk-card p-5 flex items-center justify-center gap-3 hover:border-primary/30 hover:shadow-lg transition-all bg-gradient-to-r from-muted/30 to-muted/50 hover:-translate-y-0.5"
       >
-        <HelpCircle className="w-6 h-6 text-primary" />
-        <span className="text-lg font-semibold text-foreground">
+        <HelpCircle className="w-7 h-7 text-primary" />
+        <span className="text-xl font-bold text-foreground">
           {language === 'en' ? 'Need Help?' : 'मदद चाहिए?'}
         </span>
+        <span className="text-2xl ml-auto">💬</span>
       </button>
 
       {/* Help Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-foreground/30 backdrop-blur-sm flex items-center justify-center animate-fade-in">
-          <div className="bg-card rounded-3xl p-8 max-w-md w-full mx-4 shadow-kiosk-lg animate-scale-in">
+        <div className="fixed inset-0 z-50 bg-foreground/50 backdrop-blur-sm flex items-center justify-center animate-fade-in">
+          <div className="bg-card rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl animate-scale-in border-2 border-primary/20">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <h2 className="text-3xl font-black text-foreground flex items-center gap-3">
                 <HelpCircle className="w-8 h-8 text-primary" />
                 {language === 'en' ? 'Help & Support' : 'सहायता'}
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-xl hover:bg-muted transition-colors"
+                className="p-2 rounded-xl hover:bg-muted transition-all hover:scale-110"
               >
                 <X className="w-6 h-6 text-muted-foreground" />
               </button>
@@ -84,23 +85,26 @@ const HelpSupport: React.FC = () => {
                     option.action();
                     setIsOpen(false);
                   }}
-                  className="w-full p-5 rounded-2xl border-2 border-border hover:border-primary/30 bg-background flex items-center gap-4 text-left transition-colors"
+                  className="w-full p-5 rounded-2xl border-2 border-border hover:border-primary/50 bg-background flex items-center gap-4 text-left transition-all hover:shadow-lg hover:-translate-y-0.5"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                     <option.icon className="w-7 h-7 text-primary" />
                   </div>
-                  <div>
-                    <p className="text-lg font-semibold text-foreground">{option.label}</p>
+                  <div className="flex-1">
+                    <p className="text-lg font-bold text-foreground">{option.label}</p>
                     <p className="text-sm text-muted-foreground">{option.description}</p>
                   </div>
+                  <span className="text-2xl opacity-50">→</span>
                 </button>
               ))}
             </div>
 
-            <div className="mt-6 text-center text-muted-foreground text-sm">
-              {language === 'en' 
-                ? 'Press the mic button for voice assistance' 
-                : 'आवाज सहायता के लिए माइक बटन दबाएं'}
+            <div className="mt-6 text-center p-3 bg-primary/10 rounded-xl">
+              <p className="text-muted-foreground text-sm font-medium">
+                {language === 'en' 
+                  ? '🎤 Press the mic button for voice assistance' 
+                  : '🎤 आवाज सहायता के लिए माइक बटन दबाएं'}
+              </p>
             </div>
           </div>
         </div>

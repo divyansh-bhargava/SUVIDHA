@@ -199,53 +199,107 @@ const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
   const { t, language } = useApp();
   const options = serviceOptions[serviceType] || [];
 
+  const getServiceIcon = () => {
+    const icons: Record<string, string> = {
+      electricity: '⚡',
+      water: '💧',
+      gas: '🔥',
+      municipal: '🏛️',
+    };
+    return icons[serviceType] || '📋';
+  };
+
+  const getServiceTitle = () => {
+    const titles: Record<string, { en: string; hi: string }> = {
+      electricity: { en: 'Electricity Services', hi: 'बिजली सेवाएं' },
+      water: { en: 'Water Services', hi: 'पानी सेवाएं' },
+      gas: { en: 'Gas Services', hi: 'गैस सेवाएं' },
+      municipal: { en: 'Municipal Services', hi: 'नगरपालिका सेवाएं' },
+    };
+    return language === 'en' ? titles[serviceType]?.en : titles[serviceType]?.hi;
+  };
+
+  const getIconColor = (optionId: string) => {
+    if (optionId === 'bill_payment') return 'from-green-500 to-emerald-600';
+    if (optionId.includes('new_connection')) return 'from-blue-500 to-cyan-600';
+    if (optionId.includes('disconnection')) return 'from-red-500 to-rose-600';
+    if (optionId.includes('transfer')) return 'from-purple-500 to-indigo-600';
+    return 'from-primary to-accent';
+  };
+
   return (
-    <div className="space-y-6 animate-scale-in">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          {language === 'en' ? 'Select Service Type' : 'सेवा प्रकार चुनें'}
+    <div className="space-y-6 animate-slide-up p-6 lg:p-8 max-w-5xl mx-auto">
+      {/* Enhanced Header with Icon */}
+      {/* <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center gap-3 mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center shadow-lg">
+            <span className="text-4xl">{getServiceIcon()}</span>
+          </div>
+        </div>
+        <h2 className="text-3xl font-black text-foreground mb-2">
+          {getServiceTitle()}
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-lg text-muted-foreground font-medium">
           {language === 'en' 
             ? 'Choose what you would like to do'
             : 'चुनें कि आप क्या करना चाहते हैं'}
         </p>
-      </div>
+      </div> */}
 
-      {/* Service Options */}
-      <div className="space-y-4">
-        {options.map((option) => (
+      {/* Service Options Grid */}
+      <div className="grid grid-cols-1 gap-4">
+        {options.map((option, index) => (
           <button
             key={option.id}
             onClick={() => onSelect(option.id)}
-            className="w-full kiosk-card flex items-center gap-4 p-6 hover:border-primary/30 transition-colors cursor-pointer text-left"
+            className="group relative w-full kiosk-card flex items-center gap-5 p-6 hover:border-primary/50 hover:shadow-2xl transition-all duration-300 cursor-pointer text-left hover:-translate-y-1 active:scale-[0.98] animate-slide-up"
+            style={{ animationDelay: `${index * 0.05}s` }}
           >
-            <div className="w-14 h-14 rounded-2xl bg-kiosk-icon-bg flex items-center justify-center flex-shrink-0">
-              <option.icon className="w-7 h-7 text-primary" />
+            {/* Gradient Icon Container */}
+            <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${getIconColor(option.id)} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+              <option.icon className="w-10 h-10 text-white" />
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-semibold text-foreground">
+            
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
                 {language === 'en' ? option.label : option.labelHi}
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 {language === 'en' ? option.description : option.descriptionHi}
               </p>
             </div>
+            
+            {/* Document Badge */}
             {option.requiresDocuments && (
-              <span className="text-xs px-3 py-1 rounded-full bg-accent/10 text-accent border border-accent/30">
-                {language === 'en' ? 'Docs Required' : 'दस्तावेज़ आवश्यक'}
-              </span>
+              <div className="hidden sm:flex">
+                <span className="text-xs font-bold px-4 py-2 rounded-xl bg-gradient-to-r from-amber-100 to-orange-100 text-orange-700 border-2 border-orange-300 shadow-md">
+                  {language === 'en' ? '📄 Docs Required' : '📄 दस्तावेज़ आवश्यक'}
+                </span>
+              </div>
             )}
-            <span className="text-3xl text-primary">→</span>
+            
+            {/* Arrow */}
+            <div className="flex-shrink-0">
+              <span className="text-4xl text-primary group-hover:translate-x-2 transition-transform duration-300 inline-block">→</span>
+            </div>
+            
+            {/* Hover effect overlay */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           </button>
         ))}
       </div>
 
       {/* Back Button */}
-      <button onClick={onBack} className="kiosk-btn-ghost w-full">
-        {t('back')}
-      </button>
+      <div className="pt-4">
+        <button 
+          onClick={onBack} 
+          className="w-full kiosk-btn-ghost flex items-center justify-center gap-2 text-lg hover:bg-muted/80 hover:scale-[1.02] transition-all"
+        >
+          <span className="text-2xl">←</span>
+          <span>{t('back')}</span>
+        </button>
+      </div>
     </div>
   );
 };

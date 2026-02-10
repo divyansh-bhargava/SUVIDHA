@@ -25,11 +25,11 @@ const ServiceTile: React.FC<ServiceTileProps> = ({
     if (!badge) return '';
     switch (badge.type) {
       case 'pending':
-        return 'bg-warning text-warning-foreground';
+        return 'bg-warning text-warning-foreground shadow-lg';
       case 'alert':
-        return 'bg-destructive text-destructive-foreground';
+        return 'bg-destructive text-destructive-foreground shadow-lg';
       case 'clear':
-        return 'bg-success text-success-foreground';
+        return 'bg-success text-success-foreground shadow-lg';
       default:
         return 'bg-muted text-muted-foreground';
     }
@@ -43,23 +43,38 @@ const ServiceTile: React.FC<ServiceTileProps> = ({
     return badge.type === 'clear' ? '✓' : '!';
   };
 
+  const getIconBgColor = () => {
+    if (iconColor.includes('yellow')) return 'bg-yellow-500/10 group-hover:bg-yellow-500/20';
+    if (iconColor.includes('blue')) return 'bg-blue-500/10 group-hover:bg-blue-500/20';
+    if (iconColor.includes('orange')) return 'bg-orange-500/10 group-hover:bg-orange-500/20';
+    return 'bg-primary/10 group-hover:bg-primary/20';
+  };
+
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`service-tile group relative ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`relative flex flex-col items-center justify-center gap-4 p-6 rounded-2xl
+        transition-all duration-200 cursor-pointer min-h-[160px]
+        bg-white dark:bg-card border-2 border-border
+        hover:border-primary/50 hover:shadow-2xl hover:-translate-y-1
+        active:scale-95 group
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       {/* Badge */}
       {badge && (
-        <div className={`absolute -top-2 -right-2 min-w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold px-2 ${getBadgeStyle()} shadow-md z-10`}>
+        <div className={`absolute -top-2 -right-2 min-w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold px-2 ${getBadgeStyle()} z-10 animate-bounce-subtle border-2 border-white dark:border-card`}>
           {getBadgeText()}
         </div>
       )}
       
-      <div className={`service-tile-icon group-hover:scale-110 transition-transform duration-200`}>
+      {/* Icon Container */}
+      <div className={`w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-200 ${getIconBgColor()} group-hover:scale-110 group-hover:rotate-3`}>
         <Icon className={`w-10 h-10 ${iconColor}`} />
       </div>
-      <span className="text-xl font-semibold text-foreground text-center leading-tight">
+      
+      {/* Label */}
+      <span className="text-lg font-bold text-foreground text-center leading-tight px-2">
         {label}
       </span>
     </button>

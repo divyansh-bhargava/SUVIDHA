@@ -701,16 +701,16 @@ const SuvidhaRegistration: React.FC = () => {
           
           {/* Progress indicator */}
           <div className="mt-4">
-            <StepIndicator />
+            {StepIndicator()}
           </div>
         </div>
 
         {/* Content */}
-        {step === 'basic_info' && <BasicInfoStep />}
-        {step === 'aadhaar_verify' && <AadhaarVerifyStep />}
-        {step === 'otp_verify' && <OtpVerifyStep />}
-        {step === 'processing' && <ProcessingStep />}
-        {step === 'success' && <SuccessStep />}
+        {step === 'basic_info' && BasicInfoStep()}
+        {step === 'aadhaar_verify' && AadhaarVerifyStep()}
+        {step === 'otp_verify' && OtpVerifyStep()}
+        {step === 'processing' && ProcessingStep()}
+        {step === 'success' && SuccessStep()}
       </div>
     </KioskLayout>
   );

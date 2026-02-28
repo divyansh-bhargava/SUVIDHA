@@ -77,8 +77,8 @@ const BasicInfoStepComponent: React.FC<StepProps> = memo(({
           </label>
           <Input
             type="text"
-            value={fullName}
-            onChange={handleFullNameChange}
+            // value={fullName}
+            // onChange={handleFullNameChange}
             placeholder={language === 'en' ? 'Enter your full name' : 'अपना पूरा नाम दर्ज करें'}
             className="h-12 text-base focus:outline-none"
           />

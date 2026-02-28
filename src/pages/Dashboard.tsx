@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Admin Access */}
-        {isAdmin && (
+        {/* {isAdmin && (
           <div className="animate-slide-up" style={{ animationDelay: '0.05s' }}>
             <button
               onClick={() => navigate('/admin')}
@@ -100,7 +100,7 @@ const Dashboard: React.FC = () => {
               <span className="text-4xl text-white">→</span>
             </button>
           </div>
-        )}
+        )} */}
 
         {/* Services Grid */}
         <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>

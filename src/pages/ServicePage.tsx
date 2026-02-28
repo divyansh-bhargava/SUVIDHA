@@ -99,7 +99,12 @@ const ServicePage: React.FC = () => {
   // Handle voice service action
   useEffect(() => {
     if (voiceServiceAction && step === 'select_type') {
-      handleServiceOptionSelect(voiceServiceAction);
+      if (voiceServiceAction === 'bill_payment') {
+        setSelectedServiceOption('bill_payment');
+        handleViewBill();
+      } else {
+        handleServiceOptionSelect(voiceServiceAction);
+      }
       setVoiceServiceAction(null);
     }
   }, [voiceServiceAction, step, setVoiceServiceAction]);

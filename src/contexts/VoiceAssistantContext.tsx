@@ -113,17 +113,17 @@ interface Intent {
 const INTENTS: { keywords: string[]; intent: Intent }[] = [
   {
     keywords: ['pay electricity', 'electricity bill', 'bijli', 'bijli ka bill', 'light bill'],
-    intent: { action: 'navigate', route: '/service/electricity', requiresAuth: true,
+    intent: { action: 'navigate', route: '/service/electricity', serviceAction: 'bill_payment', requiresAuth: true,
       response_en: 'Opening Electricity Bill Payment for you.', response_hi: 'बिजली बिल भुगतान खोल रहा हूँ।' },
   },
   {
     keywords: ['pay water', 'water bill', 'pani', 'pani ka bill'],
-    intent: { action: 'navigate', route: '/service/water', requiresAuth: true,
+    intent: { action: 'navigate', route: '/service/water', serviceAction: 'bill_payment', requiresAuth: true,
       response_en: 'Opening Water Bill Payment.', response_hi: 'पानी बिल भुगतान खोल रहा हूँ।' },
   },
   {
     keywords: ['pay gas', 'gas bill', 'gas ka bill'],
-    intent: { action: 'navigate', route: '/service/gas', requiresAuth: true,
+    intent: { action: 'navigate', route: '/service/gas', serviceAction: 'bill_payment', requiresAuth: true,
       response_en: 'Opening Gas Bill Payment.', response_hi: 'गैस बिल भुगतान खोल रहा हूँ।' },
   },
   {
@@ -208,7 +208,7 @@ const INTENTS: { keywords: string[]; intent: Intent }[] = [
   },
   {
     keywords: ['bill payment', 'pay bill', 'bill bharo', 'bill pay'],
-    intent: { action: 'navigate', route: '/service/electricity', requiresAuth: true,
+    intent: { action: 'navigate', route: '/service/electricity', serviceAction: 'bill_payment', requiresAuth: true,
       response_en: 'Opening Bill Payment. You can pay electricity, water or gas bills.',
       response_hi: 'बिल भुगतान खोल रहा हूँ। आप बिजली, पानी या गैस बिल भर सकते हैं।' },
   },
@@ -375,6 +375,7 @@ export const VoiceAssistantProvider: React.FC<{ children: React.ReactNode }> = (
       case 'navigate': {
         const response = language === 'en' ? intent.response_en : intent.response_hi;
         speakFn(response, () => {
+          if (intent.serviceAction) setVoiceServiceAction(intent.serviceAction);
           if (intent.route) navigate(intent.route);
           // Don't auto-listen after navigation
         });

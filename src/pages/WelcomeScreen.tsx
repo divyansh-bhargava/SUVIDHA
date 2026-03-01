@@ -227,7 +227,7 @@ const WelcomeScreen: React.FC = () => {
                 ? 'For assistance, use Voice Help or contact the help desk' 
                 : 'सहायता के लिए, वॉयस हेल्प का उपयोग करें या हेल्प डेस्क से संपर्क करें'}
             </p>
-            <p>© 2024 MeitY, Government of India</p>
+            <p>© 2026 MeitY, Government of India</p>
           </div>
         </div>
       </div>
@@ -375,7 +375,7 @@ const WelcomeScreen: React.FC = () => {
               ? '🔒 Secure session • For assistance, use Voice Help or contact help desk' 
               : '🔒 सुरक्षित सत्र • सहायता के लिए, वॉयस हेल्प या हेल्प डेस्क से संपर्क करें'}
           </p>
-          <p>© 2024 MeitY, Government of India</p>
+          <p>© 2026 MeitY, Government of India</p>
         </div>
       </div>
     </div>

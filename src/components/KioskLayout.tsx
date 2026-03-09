@@ -173,7 +173,7 @@ const KioskLayout: React.FC<KioskLayoutProps> = ({
                 ? '🔒 Secure session • For assistance, contact the help desk or administrator' 
                 : '🔒 सुरक्षित सत्र • सहायता के लिए, हेल्प डेस्क या व्यवस्थापक से संपर्क करें'}
             </p>
-            <p>© 2024 MeitY, Government of India</p>
+            <p>© 2026 MeitY, Government of India</p>
           </div>
         </footer>
       )}

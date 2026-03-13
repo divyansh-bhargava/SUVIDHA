@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Citizen ────────────────────────────────────────────
+model Citizen {
+  id          String   @id @default(uuid())
+  suvidhaId   String   @unique            // SUV2026XXXXXX
+  name        String
+  nameHi      String   @default("")
+  phone       String   @unique
+  email       String?
+  aadhaarLast4 String  @db.Char(4)
+  dob         DateTime?
+  address     String   @default("")
+  addressHi   String   @default("")
+  city        String   @default("")
+  cityHi      String   @default("")
+  ward        String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  documents   Document[]
+  complaints  Complaint[]
+  bills       Bill[]
+  serviceRequests ServiceRequest[]
+}
+
+// ─── Admin User ─────────────────────────────────────────
+model AdminUser {
+  id         String   @id @default(uuid())
+  name       String
+  nameHi     String   @default("")
+  email      String   @unique
+  password   String                      // bcrypt hashed
+  role       AdminRole @default(staff)
+  department Department?
+  city       String   @default("")
+  cityHi     String   @default("")
+  createdAt  DateTime @default(now())
+}
+
+enum AdminRole {
+  master
+  department
+  staff
+}
+
+enum Department {
+  electricity
+  water
+  gas
+  municipal
+}
+
+// ─── Document ───────────────────────────────────────────
+model Document {
+  id          String       @id @default(uuid())
+  citizenId   String
+  citizen     Citizen      @relation(fields: [citizenId], references: [id])
+  name        String                          // "Aadhaar Card"
+  type        DocType                         // identity, address, etc.
+  fileUrl     String                          // local path or S3 URL
+  fileName    String                          // original filename
+  mimeType    String       @default("application/pdf")
+  status      DocStatus    @default(pending)
+  uploadDate  DateTime     @default(now())
+  expiryDate  DateTime?
+  lastUsed    DateTime?
+
+  requestDocuments RequestDocument[]
+}
+
+enum DocType {
+  identity
+  address
+  property
+  income
+  noc
+  birth_record
+  death_record
+  tax
+  other
+}
+
+enum DocStatus {
+  valid
+  invalid
+  pending
+}
+
+// ─── Complaint ──────────────────────────────────────────
+model Complaint {
+  id          String          @id @default(uuid())
+  ticketId    String          @unique         // TKT-XXXXXXXXX
+  citizenId   String
+  citizen     Citizen         @relation(fields: [citizenId], references: [id])
+  department  Department
+  type        String                          // "Power Outage", "Billing Issue"
+  description String
+  status      ComplaintStatus @default(pending)
+  remarks     String?
+  resolvedAt  DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+enum ComplaintStatus {
+  pending
+  processing
+  resolved
+  rejected
+}
+
+// ─── Bill ───────────────────────────────────────────────
+model Bill {
+  id             String     @id @default(uuid())
+  citizenId      String
+  citizen        Citizen    @relation(fields: [citizenId], references: [id])
+  service        Department
+  consumerNumber String
+  amount         Float
+  dueDate        DateTime
+  status         BillStatus @default(unpaid)
+  period         String                       // "Jan 2026"
+  paidAt         DateTime?
+  transactionId  String?
+  createdAt      DateTime   @default(now())
+}
+
+enum BillStatus {
+  unpaid
+  paid
+}
+
+// ─── Service Request ────────────────────────────────────
+model ServiceRequest {
+  id           String        @id @default(uuid())
+  ticketId     String        @unique          // SRV-XXXXXXXXX
+  citizenId    String
+  citizen      Citizen       @relation(fields: [citizenId], references: [id])
+  department   Department
+  serviceType  String                         // "new_connection", "bill_payment"
+  description  String        @default("")
+  status       RequestStatus @default(pending)
+  assignedTo   String?
+  remarks      String?
+  verifiedBy   String?
+  verifiedAt   DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  documents    RequestDocument[]
+  electricityConnection ElectricityConnection?
+  aiCheckResult Json?                         // { formatOk, clarityOk, fieldsOk }
+}
+
+enum RequestStatus {
+  pending
+  processing
+  approved
+  rejected
+  needs_correction
+}
+
+// ─── Join table: Request ↔ Document ─────────────────────
+model RequestDocument {
+  id              String         @id @default(uuid())
+  serviceRequestId String
+  serviceRequest  ServiceRequest @relation(fields: [serviceRequestId], references: [id])
+  documentId      String
+  document        Document       @relation(fields: [documentId], references: [id])
+
+  @@unique([serviceRequestId, documentId])
+}
+
+// ─── Electricity: New Connection Details ───────────────
+model ElectricityConnection {
+  id                  String               @id @default(uuid())
+  serviceRequestId    String               @unique
+  serviceRequest      ServiceRequest       @relation(fields: [serviceRequestId], references: [id])
+  connectionCategory  ConnectionCategory?
+  ownership           OwnershipType?
+  loadCategory        LoadCategory?
+  loadLabel           String?
+  applicantName       String?
+  fatherSpouseName    String?
+  phone               String?
+  email               String?
+  useRegisteredAddress Boolean             @default(true)
+  installationAddress String?
+  addressJson         Json?
+  submittedAt         DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+enum ConnectionCategory {
+  domestic
+  commercial
+}
+
+enum OwnershipType {
+  owner
+  tenant
+}
+
+enum LoadCategory {
+  small
+  medium
+  large
+  commercial
+}
+
+// ─── OTP store (short-lived) ────────────────────────────
+model Otp {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String   @db.Char(6)
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone, code])
+}

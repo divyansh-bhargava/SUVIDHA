@@ -15,6 +15,7 @@ import StatusTracking from "./pages/StatusTracking";
 import Documents from "./pages/Documents";
 import AdminDashboard from "./pages/AdminDashboard";
 import SuvidhaRegistration from "./pages/SuvidhaRegistration";
+import NewElectricityConnection from "./pages/NewElectricityConnection";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/register" element={<SuvidhaRegistration />} />
                 <Route path="/service/:serviceType" element={<ServicePage />} />
+                <Route path="/service/electricity/new-connection" element={<NewElectricityConnection />} />
                 <Route path="/complaint/register" element={<ComplaintRegister />} />
                 <Route path="/status" element={<StatusTracking />} />
                 <Route path="/documents" element={<Documents />} />

@@ -113,6 +113,11 @@ const ServicePage: React.FC = () => {
   const iconColor = serviceColors[serviceType || 'electricity'];
 
   const handleServiceOptionSelect = (optionId: string) => {
+    if (serviceType === 'electricity' && optionId === 'new_connection') {
+      navigate('/service/electricity/new-connection');
+      return;
+    }
+
     setSelectedServiceOption(optionId);
     const option = serviceOptions[serviceType || '']?.find(o => o.id === optionId);
     

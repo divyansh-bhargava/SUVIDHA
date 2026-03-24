@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useApp } from '@/contexts/AppContext';
 import KioskLayout from '@/components/KioskLayout';
-import { Search, Clock, CheckCircle2, XCircle, Loader2, FileText, Building2, Calendar, ArrowRight, AlertCircle, Phone, HelpCircle } from 'lucide-react';
+import { Search, Clock, CheckCircle2, XCircle, Loader2, FileText, Calendar, ArrowRight, AlertCircle, Phone, HelpCircle, Copy, Check } from 'lucide-react';
 
 // Department-specific theming
 const getDeptGradient = (dept: string): string => {
@@ -26,12 +27,71 @@ const getDeptEmoji = (dept: string): string => {
 
 const StatusTracking: React.FC = () => {
   const { t, language, getComplaintByTicketId } = useApp();
+  const location = useLocation();
   const [ticketId, setTicketId] = useState('');
   const [searchedTicket, setSearchedTicket] = useState<ReturnType<typeof getComplaintByTicketId>>(undefined);
   const [searched, setSearched] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyTicketId = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  // Auto-fill if coming from new connection form
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const appId = params.get('appId');
+    if (appId) {
+      const normalizedId = appId.trim().toUpperCase();
+      setTicketId(normalizedId);
+      // Auto-search with the app ID
+      setTimeout(() => {
+        const savedApp = localStorage.getItem(`suvidha_app_${normalizedId}`);
+        if (savedApp) {
+          const appData = JSON.parse(savedApp);
+          const complaint = {
+            ticketId: appData.applicationId,
+            type: appData.serviceName,
+            department: appData.department,
+            status: appData.status,
+            createdAt: new Date(appData.submittedAt).toLocaleDateString(),
+            description: `${appData.serviceName}\nApplicant: ${appData.applicantName}`,
+          };
+          setSearchedTicket(complaint);
+          setSearched(true);
+        }
+      }, 100);
+    }
+  }, [location]);
 
   const handleSearch = () => {
-    const complaint = getComplaintByTicketId(ticketId);
+    const normalizedId = ticketId.trim().toUpperCase();
+    setTicketId(normalizedId);
+
+    // First check localStorage for saved applications
+    const savedApp = localStorage.getItem(`suvidha_app_${normalizedId}`);
+    if (savedApp) {
+      const appData = JSON.parse(savedApp);
+      const complaint = {
+        ticketId: appData.applicationId,
+        type: appData.serviceName,
+        department: appData.department,
+        status: appData.status,
+        createdAt: new Date(appData.submittedAt).toLocaleDateString(),
+        description: `${appData.serviceName}\nApplicant: ${appData.applicantName}`,
+      };
+      setSearchedTicket(complaint);
+      setSearched(true);
+      return;
+    }
+    
+    const complaint = getComplaintByTicketId(normalizedId);
     setSearchedTicket(complaint);
     setSearched(true);
   };
@@ -188,7 +248,17 @@ const StatusTracking: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-white/80 text-xs">{language === 'en' ? 'Ticket' : 'टिकट'}</p>
-                      <p className="font-mono font-bold text-lg">{searchedTicket.ticketId}</p>
+                      <div className="flex items-center justify-end gap-2 mt-1">
+                        <p className="font-mono font-bold text-lg">{searchedTicket.ticketId}</p>
+                        <button
+                          onClick={() => copyTicketId(searchedTicket.ticketId)}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/20 hover:bg-white/30 transition-colors"
+                          aria-label={language === 'en' ? 'Copy ticket ID' : 'टिकट ID कॉपी करें'}
+                          title={language === 'en' ? 'Copy ticket ID' : 'टिकट ID कॉपी करें'}
+                        >
+                          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
